@@ -5,8 +5,21 @@ import Page404 from '../../pages/404/404';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppRoute } from '../../config';
+import { useEffect } from 'react';
+import { fetchProducts } from '../../store/api-action';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 function App(): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  const products = useAppSelector((store) => store.products);
+
+  console.log(products);
+
 
   return (
     <HelmetProvider>
