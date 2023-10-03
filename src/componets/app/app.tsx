@@ -1,4 +1,4 @@
-import MainPage from '../../pages/main/main';
+import MainPage from '../../pages/catalog/catalog';
 import ProductPage from '../../pages/product/product';
 import BasketPage from '../../pages/basket/basket';
 import Page404 from '../../pages/404/404';
@@ -16,9 +16,10 @@ function App(): JSX.Element {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const products = useAppSelector((store) => store.products);
 
-  console.log(products);
+  // const products = useAppSelector((store) => store.products);
+
+  // console.log(products);
 
 
   return (
@@ -27,7 +28,7 @@ function App(): JSX.Element {
         <Routes>
 
           <Route
-            path={AppRoute.Main}
+            path={AppRoute.Catalog}
             element={
               <MainPage />
             }
