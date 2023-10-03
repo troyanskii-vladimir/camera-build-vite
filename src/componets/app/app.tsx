@@ -1,6 +1,6 @@
 import MainPage from '../../pages/main/main';
 import ProductPage from '../../pages/product/product';
-import CartPage from '../../pages/cart/cart';
+import BasketPage from '../../pages/basket/basket';
 import Page404 from '../../pages/404/404';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -27,7 +27,7 @@ function App(): JSX.Element {
 
           <Route
             path={AppRoute.Cart}
-            element={<CartPage />}
+            element={<BasketPage />}
           />
 
           <Route
