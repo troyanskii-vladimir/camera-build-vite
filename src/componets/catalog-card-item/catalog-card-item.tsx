@@ -1,48 +1,50 @@
-function CatalogCardItem(): JSX.Element {
+import { Product } from '../../types/product';
+
+
+type CatalogCardItemProps = {
+  product: Product;
+}
+
+function CatalogCardItem({product}: CatalogCardItemProps): JSX.Element {
+  const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
+
+
   return (
     <div className="product-card">
       <div className="product-card__img">
         <picture>
           <source
             type="image/webp"
-            srcSet="img/content/das-auge.webp, img/content/das-auge@2x.webp 2x"
+            srcSet={`${product.previewImg}, ${product.previewImgWebp2x} 2x`}
           />
           <img
-            src="img/content/das-auge.jpg"
-            srcSet="img/content/das-auge@2x.jpg 2x"
+            src={product.previewImg}
+            srcSet={`${product.previewImg2x} 2x`}
             width={280}
             height={240}
-            alt="Ретрокамера «Das Auge IV»"
+            alt={product.name}
           />
         </picture>
       </div>
       <div className="product-card__info">
         <div className="rate product-card__rate">
-          <svg width={17} height={16} aria-hidden="true">
-            <use xlinkHref="#icon-full-star" />
-          </svg>
-          <svg width={17} height={16} aria-hidden="true">
-            <use xlinkHref="#icon-full-star" />
-          </svg>
-          <svg width={17} height={16} aria-hidden="true">
-            <use xlinkHref="#icon-full-star" />
-          </svg>
-          <svg width={17} height={16} aria-hidden="true">
-            <use xlinkHref="#icon-star" />
-          </svg>
-          <svg width={17} height={16} aria-hidden="true">
-            <use xlinkHref="#icon-star" />
-          </svg>
-          <p className="visually-hidden">Рейтинг: 3</p>
+          {
+            ratingArray.map((star) => (
+              <svg width={17} height={16} aria-hidden="true" key={star.i}>
+                <use xlinkHref={`#icon-${star.class}star`} />
+              </svg>
+            ))
+          }
+          <p className="visually-hidden">Рейтинг: {product.rating}</p>
           <p className="rate__count">
-            <span className="visually-hidden">Всего оценок:</span>23
+            <span className="visually-hidden">Всего оценок:</span>{product.reviewCount}
           </p>
         </div>
         <p className="product-card__title">
-          Ретрокамера Das Auge IV
+          {product.name}
         </p>
         <p className="product-card__price">
-          <span className="visually-hidden">Цена:</span>73 450 ₽
+          <span className="visually-hidden">Цена:</span>{product.price.toLocaleString()} ₽
         </p>
       </div>
       <div className="product-card__buttons">

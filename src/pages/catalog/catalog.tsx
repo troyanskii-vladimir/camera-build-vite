@@ -4,8 +4,13 @@ import CatalogSidebar from '../../componets/catalog-sidebar/catalog-sidebar';
 import CatalogSort from '../../componets/catalog-sort/catalog-sort';
 import Footer from '../../componets/footer/footer';
 import Header from '../../componets/header/header';
+import { useAppSelector } from '../../hooks';
+
 
 function MainPage(): JSX.Element {
+  const products = useAppSelector((store) => store.products);
+
+
   return (
     <div className="wrapper">
       <Header />
@@ -38,7 +43,7 @@ function MainPage(): JSX.Element {
                 <CatalogSidebar />
                 <div className="catalog__content">
                   <CatalogSort />
-                  <CatalogCardsList />
+                  <CatalogCardsList products={products} />
                   <div className="pagination">
                     <ul className="pagination__list">
                       <li className="pagination__item">

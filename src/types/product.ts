@@ -14,6 +14,7 @@ export type Product = {
   description: string;
   level: Level;
   price: number;
+  rating: number;
   reviewCount: number;
   previewImg: string;
   previewImg2x: string;
