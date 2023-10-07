@@ -6,7 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppRoute } from '../../config';
 import { useEffect } from 'react';
-import { fetchProducts } from '../../store/api-action';
+import { fetchProducts, fetchPromoProducts } from '../../store/api-action';
 import { useAppDispatch } from '../../hooks';
 
 function App(): JSX.Element {
@@ -14,6 +14,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchPromoProducts());
   }, [dispatch]);
 
 

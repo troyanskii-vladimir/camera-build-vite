@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import { Product } from '../../types/product';
+import { AppRoute } from '../../config';
 
 
 type CatalogCardItemProps = {
@@ -44,7 +46,7 @@ function CatalogCardItem({product}: CatalogCardItemProps): JSX.Element {
           {product.name}
         </p>
         <p className="product-card__price">
-          <span className="visually-hidden">Цена:</span>{product.price.toLocaleString()} ₽
+          <span className="visually-hidden">Цена:</span>{product.price?.toLocaleString()} ₽
         </p>
       </div>
       <div className="product-card__buttons">
@@ -54,9 +56,9 @@ function CatalogCardItem({product}: CatalogCardItemProps): JSX.Element {
         >
           Купить
         </button>
-        <a className="btn btn--transparent" href="#">
+        <Link className="btn btn--transparent" to={`${AppRoute.Product}/${product.id}`}>
           Подробнее
-        </a>
+        </Link>
       </div>
     </div>
   );

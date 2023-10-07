@@ -1,21 +1,22 @@
-import Banner from '../../componets/banner/banner';
 import CatalogCardsList from '../../componets/catalog-cards-list/catalog-cards-list';
 import CatalogSidebar from '../../componets/catalog-sidebar/catalog-sidebar';
 import CatalogSort from '../../componets/catalog-sort/catalog-sort';
 import Footer from '../../componets/footer/footer';
 import Header from '../../componets/header/header';
+import Slider from '../../componets/slider/slider';
 import { useAppSelector } from '../../hooks';
 
 
 function MainPage(): JSX.Element {
   const products = useAppSelector((store) => store.products);
+  const promoProducts = useAppSelector((store) => store.promoProducts);
 
 
   return (
     <div className="wrapper">
       <Header />
       <main>
-        <Banner />
+        <Slider products={promoProducts} />
         <div className="page-content">
           <div className="breadcrumbs">
             <div className="container">

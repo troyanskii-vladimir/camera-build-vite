@@ -1,0 +1,21 @@
+
+.swiperContainerPagination {
+  height: 40px;
+  padding-right: 30px;
+  display: flex;
+  justify-content: end;
+}
+
+.swiperBullet {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.swiperActiveBullet {
+  background-color: #888;
+}
