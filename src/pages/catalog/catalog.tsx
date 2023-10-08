@@ -82,7 +82,8 @@ function MainPage(): JSX.Element {
                 <div className="catalog__content">
                   <CatalogSort />
                   {
-                    !isProductsLoading && <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick}/>
+                    !isProductsLoading &&
+                    <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick}/>
                   }
                   {
                     Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
