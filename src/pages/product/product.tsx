@@ -1,5 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchProductDataAction } from '../../store/api-action';
 import Header from '../../componets/header/header';
@@ -8,15 +8,22 @@ import SimilarList from '../../componets/similar-list/similar-list';
 import ReviewsList from '../../componets/reviews-list/reviews-list';
 import Footer from '../../componets/footer/footer';
 import { Helmet } from 'react-helmet-async';
+import Page404 from '../404/404';
 
+
+enum Tabs {
+  Desc = 'desc',
+  Char = 'char',
+}
 
 function ProductPage(): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const {id} = useParams();
 
   const product = useAppSelector((store) => store.productData);
-  const isProductsLoading = useAppSelector((store) => store.isProductsLoading);
+  // const isProductsLoading = useAppSelector((store) => store.isProductsLoading);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   useEffect(() => {
@@ -28,8 +35,17 @@ function ProductPage(): JSX.Element {
 
   }, [dispatch, id, product]);
 
-  if (isProductsLoading) {
-    return <p>Loading...</p>;
+  const location = useLocation();
+  const tabsType = location.search.slice(6, 10) as Tabs || Tabs.Char;
+  const [currentTab, setCurrentTab] = useState<Tabs>(tabsType);
+
+
+  // if (isProductsLoading) {
+  //   return <p>Loading...</p>;
+  // }
+
+  if (Object.keys(product).length === 0 || !id) {
+    return <Page404 />;
   }
 
   return (
@@ -109,15 +125,31 @@ function ProductPage(): JSX.Element {
                   </button>
                   <div className="tabs product__tabs">
                     <div className="tabs__controls product__tabs-controls">
-                      <button className="tabs__control" type="button">
+                      <button
+                        className={`tabs__control ${currentTab === Tabs.Char ? 'is-active' : ''}`}
+                        type="button"
+                        onClick={(evt) => {
+                          evt.preventDefault();
+                          setCurrentTab(Tabs.Char);
+                          navigate(`${AppRoute.Product}/${id}?tabs=${Tabs.Char}`);
+                        }}
+                      >
                         Характеристики
                       </button>
-                      <button className="tabs__control is-active" type="button">
+                      <button
+                        className={`tabs__control ${currentTab === Tabs.Desc ? 'is-active' : ''}`}
+                        type="button"
+                        onClick={(evt) => {
+                          evt.preventDefault();
+                          setCurrentTab(Tabs.Desc);
+                          navigate(`${AppRoute.Product}/${id}?tabs=${Tabs.Desc}`);
+                        }}
+                      >
                         Описание
                       </button>
                     </div>
                     <div className="tabs__content">
-                      <div className="tabs__element">
+                      <div className={`tabs__element ${currentTab === Tabs.Char ? 'is-active' : ''}`}>
                         <ul className="product__tabs-list">
                           <li className="item-list">
                             <span className="item-list__title">Артикул:</span>
@@ -137,7 +169,7 @@ function ProductPage(): JSX.Element {
                           </li>
                         </ul>
                       </div>
-                      <div className="tabs__element is-active">
+                      <div className={`tabs__element ${currentTab === Tabs.Desc ? 'is-active' : ''}`}>
                         <div className="product__tabs-text">
                           <p>
                             {product.description}
