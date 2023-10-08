@@ -13,7 +13,7 @@ type InitialState = {
 const initialState: InitialState = {
   products: [],
   promoProducts: [],
-  isProductsLoading: false,
+  isProductsLoading: true,
 };
 
 

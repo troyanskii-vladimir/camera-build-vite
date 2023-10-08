@@ -28,7 +28,9 @@ function App(): JSX.Element {
             element={
               <MainPage />
             }
-          />
+          >
+            <Route path='?page=:id' element={<MainPage />} />
+          </Route>
 
           <Route path={AppRoute.Product}>
             <Route index element={<Page404 />} />

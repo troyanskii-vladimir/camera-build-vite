@@ -1,15 +1,44 @@
+import { useLocation } from 'react-router-dom';
 import CatalogCardsList from '../../componets/catalog-cards-list/catalog-cards-list';
 import CatalogSidebar from '../../componets/catalog-sidebar/catalog-sidebar';
 import CatalogSort from '../../componets/catalog-sort/catalog-sort';
 import Footer from '../../componets/footer/footer';
 import Header from '../../componets/header/header';
+import Pagination from '../../componets/pagination/pagination';
 import Slider from '../../componets/slider/slider';
 import { useAppSelector } from '../../hooks';
+import { useEffect, useState } from 'react';
+import { Product } from '../../types/product';
+
+const DISPLAYED_PRODUCTS = 9;
 
 
 function MainPage(): JSX.Element {
   const products = useAppSelector((store) => store.products);
   const promoProducts = useAppSelector((store) => store.promoProducts);
+  const isProductsLoading = useAppSelector((store) => store.isProductsLoading);
+
+  const location = useLocation();
+  const page = location.search.at(-1) || '1';
+
+  const [currentProducts, setCurrentProducts] = useState<Product[]>(products);
+  const [currentPage, setCurrentPage] = useState(Number(page));
+
+
+  useEffect(() => {
+    const needToUpdate = currentPage !== Number(page) || products[DISPLAYED_PRODUCTS * (currentPage - 1)];
+
+    if (needToUpdate) {
+      setCurrentProducts(products.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
+    }
+
+  }, [currentPage, page, products]);
+
+
+  const handleNumberButtonClick = (num: number): void => {
+    setCurrentProducts([]);
+    setCurrentPage(num);
+  };
 
 
   return (
@@ -44,37 +73,17 @@ function MainPage(): JSX.Element {
                 <CatalogSidebar />
                 <div className="catalog__content">
                   <CatalogSort />
-                  <CatalogCardsList products={products} />
-                  <div className="pagination">
-                    <ul className="pagination__list">
-                      <li className="pagination__item">
-                        <a
-                          className="pagination__link pagination__link--active"
-                          href={1}
-                        >
-                          1
-                        </a>
-                      </li>
-                      <li className="pagination__item">
-                        <a className="pagination__link" href={2}>
-                          2
-                        </a>
-                      </li>
-                      <li className="pagination__item">
-                        <a className="pagination__link" href={3}>
-                          3
-                        </a>
-                      </li>
-                      <li className="pagination__item">
-                        <a
-                          className="pagination__link pagination__link--text"
-                          href={2}
-                        >
-                          Далее
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  {
+                    !isProductsLoading && <CatalogCardsList products={currentProducts} />
+                  }
+                  {
+                    Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
+                    <Pagination
+                      currentPage={currentPage}
+                      countOfPages={Math.ceil(products.length / DISPLAYED_PRODUCTS)}
+                      onNumberButtonClick={handleNumberButtonClick}
+                    />
+                  }
                 </div>
               </div>
             </div>
