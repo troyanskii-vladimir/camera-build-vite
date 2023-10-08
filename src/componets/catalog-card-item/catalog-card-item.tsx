@@ -5,11 +5,15 @@ import { AppRoute } from '../../config';
 
 type CatalogCardItemProps = {
   product: Product;
+  onAddButtonClick: (product: Product) => void;
 }
 
-function CatalogCardItem({product}: CatalogCardItemProps): JSX.Element {
+function CatalogCardItem({product, onAddButtonClick}: CatalogCardItemProps): JSX.Element {
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
+  const handleAddButtonClick = (): void => {
+    onAddButtonClick(product);
+  };
 
   return (
     <div className="product-card">
@@ -53,6 +57,7 @@ function CatalogCardItem({product}: CatalogCardItemProps): JSX.Element {
         <button
           className="btn btn--purple product-card__btn"
           type="button"
+          onClick={handleAddButtonClick}
         >
           Купить
         </button>

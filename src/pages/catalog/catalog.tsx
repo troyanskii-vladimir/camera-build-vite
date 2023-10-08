@@ -9,6 +9,7 @@ import Slider from '../../componets/slider/slider';
 import { useAppSelector } from '../../hooks';
 import { useEffect, useState } from 'react';
 import { Product } from '../../types/product';
+import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 
 const DISPLAYED_PRODUCTS = 9;
 
@@ -21,9 +22,10 @@ function MainPage(): JSX.Element {
   const location = useLocation();
   const page = location.search.at(-1) || '1';
 
+  const [modalData, setModalData] = useState<Product | null>(null);
+
   const [currentProducts, setCurrentProducts] = useState<Product[]>(products);
   const [currentPage, setCurrentPage] = useState(Number(page));
-
 
   useEffect(() => {
     const needToUpdate = currentPage !== Number(page) || products[DISPLAYED_PRODUCTS * (currentPage - 1)];
@@ -34,12 +36,18 @@ function MainPage(): JSX.Element {
 
   }, [currentPage, page, products]);
 
-
   const handleNumberButtonClick = (num: number): void => {
     setCurrentProducts([]);
     setCurrentPage(num);
   };
 
+  const handleAddButtonClick = (product: Product): void => {
+    setModalData(product);
+  };
+
+  const handleCloseButtonClick = (): void => {
+    setModalData(null);
+  };
 
   return (
     <div className="wrapper">
@@ -74,7 +82,7 @@ function MainPage(): JSX.Element {
                 <div className="catalog__content">
                   <CatalogSort />
                   {
-                    !isProductsLoading && <CatalogCardsList products={currentProducts} />
+                    !isProductsLoading && <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick}/>
                   }
                   {
                     Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
@@ -89,6 +97,10 @@ function MainPage(): JSX.Element {
             </div>
           </section>
         </div>
+        {
+          modalData &&
+          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} />
+        }
       </main>
       <Footer />
     </div>
