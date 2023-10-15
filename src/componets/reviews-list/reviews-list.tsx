@@ -7,9 +7,10 @@ const COUNT_OF_REVIEWS_PART = 3;
 
 type ReviewsListProps = {
   reviews: Review[];
+  onCreateReviewButtonClick: () => void;
 }
 
-function ReviewsList({reviews}: ReviewsListProps): JSX.Element {
+function ReviewsList({reviews, onCreateReviewButtonClick}: ReviewsListProps): JSX.Element {
   const [activeReviews, setActiveReviewsIndex] = useState<Review[]>([]);
 
   useEffect(() => {
@@ -20,6 +21,10 @@ function ReviewsList({reviews}: ReviewsListProps): JSX.Element {
     }
   }, [reviews]);
 
+
+  const handleCreateReviewButtonClick = () => {
+    onCreateReviewButtonClick();
+  };
 
   const handleMoreClick = (): void => {
     const countOfReviews = activeReviews.length;
@@ -39,7 +44,7 @@ function ReviewsList({reviews}: ReviewsListProps): JSX.Element {
         <div className="container">
           <div className="page-content__headed">
             <h2 className="title title--h3">Отзывы</h2>
-            <button className="btn" type="button">
+            <button className="btn" type="button" onClick={handleCreateReviewButtonClick}>
               Оставить свой отзыв
             </button>
           </div>

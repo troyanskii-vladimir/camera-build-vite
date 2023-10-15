@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet-async';
 import Page404 from '../404/404';
 import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
+import ReviewForm from '../../componets/review-form/review-form';
 
 
 enum Tabs {
@@ -30,6 +31,7 @@ function ProductPage(): JSX.Element {
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const [modalData, setModalData] = useState<Product | null>(null);
+  const [modalReviewActive, setModalReviewActive] = useState<boolean>(false);
 
   useEffect(() => {
     const needToGetData = product.id !== Number(id) || Object.keys(product).length === 0;
@@ -53,8 +55,12 @@ function ProductPage(): JSX.Element {
 
   const handleCloseButtonClick = (): void => {
     setModalData(null);
+    setModalReviewActive(false);
   };
 
+  const handleCreateReviewButtonClick = (): void => {
+    setModalReviewActive(true);
+  };
 
   if (Object.keys(product).length === 0 || !id) {
     return <Page404 />;
@@ -200,12 +206,16 @@ function ProductPage(): JSX.Element {
           }
           {
             reviews.length > 0 &&
-            <ReviewsList reviews={reviews} />
+            <ReviewsList reviews={reviews} onCreateReviewButtonClick={handleCreateReviewButtonClick} />
           }
         </div>
         {
           modalData &&
           <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} />
+        }
+        {
+          modalReviewActive &&
+          <ReviewForm onCloseButtonClick={handleCloseButtonClick} />
         }
       </main>
       <a className="up-btn" href="#header">
