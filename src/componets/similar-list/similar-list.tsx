@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
@@ -14,7 +13,7 @@ function SimilarList({products, onAddButtonClick}: SimilarListProps): JSX.Elemen
   const [activeProductNumbers, setActiveProductNumbers] = useState([0, 1, 2]);
 
   useEffect(() => {
-    setActiveProductNumbers([0 , 1, 2]);
+    setActiveProductNumbers([0, 1, 2]);
   }, [products]);
 
   return (
