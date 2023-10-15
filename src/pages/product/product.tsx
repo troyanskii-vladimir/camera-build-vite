@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchProductDataAction, fetchSimilarProductsAction } from '../../store/api-action';
+import { fetchProductDataAction, fetchProductReviewsAction, fetchSimilarProductsAction } from '../../store/api-action';
 import Header from '../../componets/header/header';
 import { AppRoute } from '../../config';
 import SimilarList from '../../componets/similar-list/similar-list';
@@ -26,6 +26,7 @@ function ProductPage(): JSX.Element {
 
   const product = useAppSelector((store) => store.productData);
   const similarProducts = useAppSelector((store) => store.similarProducts);
+  const reviews = useAppSelector((store) => store.productReviews);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const [modalData, setModalData] = useState<Product | null>(null);
@@ -36,6 +37,7 @@ function ProductPage(): JSX.Element {
     if (needToGetData && id) {
       dispatch(fetchProductDataAction(id));
       dispatch(fetchSimilarProductsAction(id));
+      dispatch(fetchProductReviewsAction(id));
     }
 
   }, [dispatch, id, product]);
@@ -196,7 +198,10 @@ function ProductPage(): JSX.Element {
             similarProducts &&
             <SimilarList products={similarProducts} onAddButtonClick={handleAddButtonClick} />
           }
-          <ReviewsList />
+          {
+            reviews.length > 0 &&
+            <ReviewsList reviews={reviews} />
+          }
         </div>
         {
           modalData &&

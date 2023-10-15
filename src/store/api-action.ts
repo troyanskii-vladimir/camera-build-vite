@@ -1,9 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/state';
 import { AxiosInstance } from 'axios';
-import { loadProducts, loadPromoProducts, setProductsLoading, loadProductData, laodSimilarProducts } from './action';
+import { loadProducts, loadPromoProducts, setProductsLoading, loadProductData, loadSimilarProducts, loadProductReview } from './action';
 import { Product } from '../types/product';
 import { APIRoute } from '../config';
+import { Review } from '../types/review';
 
 
 export const fetchProductsAction = createAsyncThunk<void, undefined, {
@@ -60,7 +61,22 @@ export const fetchSimilarProductsAction = createAsyncThunk<void, string, {
   async (productId, {dispatch, extra: api}) => {
     dispatch(setProductsLoading(true));
     const {data} = await api.get<Product[]>(`${APIRoute.Cameras}/${productId}${APIRoute.Similar}`);
-    dispatch(laodSimilarProducts(data));
+    dispatch(loadSimilarProducts(data));
+    dispatch(setProductsLoading(false));
+  }
+);
+
+
+export const fetchProductReviewsAction = createAsyncThunk<void, string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'fetchProductReviews',
+  async (productId, {dispatch, extra: api}) => {
+    dispatch(setProductsLoading(true));
+    const {data} = await api.get<Review[]>(`${APIRoute.Cameras}/${productId}${APIRoute.Reviews}`);
+    dispatch(loadProductReview(data));
     dispatch(setProductsLoading(false));
   }
 );
