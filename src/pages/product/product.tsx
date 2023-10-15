@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchProductDataAction } from '../../store/api-action';
+import { fetchProductDataAction, fetchSimilarProductsAction } from '../../store/api-action';
 import Header from '../../componets/header/header';
 import { AppRoute } from '../../config';
 import SimilarList from '../../componets/similar-list/similar-list';
@@ -9,6 +9,8 @@ import ReviewsList from '../../componets/reviews-list/reviews-list';
 import Footer from '../../componets/footer/footer';
 import { Helmet } from 'react-helmet-async';
 import Page404 from '../404/404';
+import { Product } from '../../types/product';
+import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 
 
 enum Tabs {
@@ -23,14 +25,17 @@ function ProductPage(): JSX.Element {
   const {id} = useParams();
 
   const product = useAppSelector((store) => store.productData);
-  // const isProductsLoading = useAppSelector((store) => store.isProductsLoading);
+  const similarProducts = useAppSelector((store) => store.similarProducts);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
+
+  const [modalData, setModalData] = useState<Product | null>(null);
 
   useEffect(() => {
     const needToGetData = product.id !== Number(id) || Object.keys(product).length === 0;
 
     if (needToGetData && id) {
       dispatch(fetchProductDataAction(id));
+      dispatch(fetchSimilarProductsAction(id));
     }
 
   }, [dispatch, id, product]);
@@ -40,9 +45,14 @@ function ProductPage(): JSX.Element {
   const [currentTab, setCurrentTab] = useState<Tabs>(tabsType);
 
 
-  // if (isProductsLoading) {
-  //   return <p>Loading...</p>;
-  // }
+  const handleAddButtonClick = (prod: Product): void => {
+    setModalData(prod);
+  };
+
+  const handleCloseButtonClick = (): void => {
+    setModalData(null);
+  };
+
 
   if (Object.keys(product).length === 0 || !id) {
     return <Page404 />;
@@ -182,9 +192,16 @@ function ProductPage(): JSX.Element {
               </div>
             </section>
           </div>
-          <SimilarList />
+          {
+            similarProducts &&
+            <SimilarList products={similarProducts} onAddButtonClick={handleAddButtonClick} />
+          }
           <ReviewsList />
         </div>
+        {
+          modalData &&
+          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} />
+        }
       </main>
       <a className="up-btn" href="#header">
         <svg width={12} height={18} aria-hidden="true">

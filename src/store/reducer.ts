@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { Product } from '../types/product';
-import { loadProducts, setProductsLoading, loadPromoProducts, loadProductData } from './action';
+import { loadProducts, setProductsLoading, loadPromoProducts, loadProductData, laodSimilarProducts } from './action';
 import { PromoProduct } from '../types/promo-product';
 
 
@@ -9,6 +9,7 @@ type InitialState = {
   promoProducts: PromoProduct[];
   isProductsLoading: boolean;
   productData: Product;
+  similarProducts: Product[];
 }
 
 const initialState: InitialState = {
@@ -16,6 +17,7 @@ const initialState: InitialState = {
   promoProducts: [],
   isProductsLoading: true,
   productData: {} as Product,
+  similarProducts: [],
 };
 
 
@@ -32,5 +34,8 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(loadProductData, (state, action) => {
       state.productData = action.payload;
+    })
+    .addCase(laodSimilarProducts, (state, action) => {
+      state.similarProducts = action.payload;
     });
 });

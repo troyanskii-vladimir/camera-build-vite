@@ -6,3 +6,4 @@ export const setProductsLoading = createAction<boolean>('setProductsLoading');
 export const loadProducts = createAction<Product[]>('loadProducts');
 export const loadPromoProducts = createAction<PromoProduct[]>('loadPromoProducts');
 export const loadProductData = createAction<Product>('loadProductData');
+export const laodSimilarProducts = createAction<Product[]>('laodSimilarProducts');
