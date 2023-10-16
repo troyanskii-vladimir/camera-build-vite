@@ -3,6 +3,7 @@ import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import SliderSimilar from '../slider-similar/slider-similar';
 
+
 // const COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE = 3;
 
 type SimilarListProps = {
