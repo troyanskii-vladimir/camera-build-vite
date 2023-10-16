@@ -5,7 +5,7 @@ import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import { A11y, Navigation } from 'swiper/modules';
 import SwiperSimilarButtons from './slider-similar-buttons';
-
+import styles from './test.module.css';
 
 type SliderSimilarProps = {
   products: Product[];
@@ -25,7 +25,12 @@ function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.El
   return (
     <Swiper
       modules={[Navigation, A11y]}
+      navigation={{
+        prevEl: '.slider-controls--prev',
+        nextEl: '.slider-controls--next',
+      }}
     >
+      <SwiperSimilarButtons />
       {
         subarray.map((page) => (
           <SwiperSlide key={page[0].id}>
@@ -56,7 +61,6 @@ function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.El
           </svg>
         </button> */}
       {/* <div className=".next" /> */}
-      <SwiperSimilarButtons />
     </Swiper>
   );
 }
