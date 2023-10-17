@@ -4,8 +4,7 @@ import 'swiper/css/navigation';
 import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import { A11y, Navigation } from 'swiper/modules';
-import SwiperSimilarButtons from './slider-similar-buttons';
-import styles from './test.module.css';
+
 
 type SliderSimilarProps = {
   products: Product[];
@@ -25,12 +24,12 @@ function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.El
   return (
     <Swiper
       modules={[Navigation, A11y]}
+      allowTouchMove={false}
       navigation={{
         prevEl: '.slider-controls--prev',
         nextEl: '.slider-controls--next',
       }}
     >
-      <SwiperSimilarButtons />
       {
         subarray.map((page) => (
           <SwiperSlide key={page[0].id}>
@@ -49,18 +48,24 @@ function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.El
           </SwiperSlide>
         ))
       }
-      {/* <button
-          // className="slider-controls slider-controls--next"
-          className="slider-controls--next"
-          type="button"
-          aria-label="Следующий слайд"
-          // onClick={() => swiperRef.current?.swiper.slideNext()}
-        >SDGsdgsdg
-          <svg width={7} height={12} aria-hidden="true">
-            <use xlinkHref="#icon-arrow" />
-          </svg>
-        </button> */}
-      {/* <div className=".next" /> */}
+      <button
+        className='slider-controls slider-controls--prev'
+        type="button"
+        aria-label="Предыдущий слайд"
+      >
+        <svg width={7} height={12} aria-hidden="true">
+          <use xlinkHref="#icon-arrow" />
+        </svg>
+      </button>
+      <button
+        className='slider-controls slider-controls--next'
+        type="button"
+        aria-label="Следующий слайд"
+      >
+        <svg width={7} height={12} aria-hidden="true">
+          <use xlinkHref="#icon-arrow" />
+        </svg>
+      </button>
     </Swiper>
   );
 }
