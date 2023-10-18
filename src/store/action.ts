@@ -9,3 +9,5 @@ export const loadPromoProducts = createAction<PromoProduct[]>('loadPromoProducts
 export const loadProductData = createAction<Product>('loadProductData');
 export const loadSimilarProducts = createAction<Product[]>('loadSimilarProducts');
 export const loadProductReview = createAction<Review[]>('loadProductReviews');
+export const createNewComment = createAction<Review>('postNewComment');
+export const setNewCommentPending = createAction<boolean>('setNewCommentPending');

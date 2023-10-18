@@ -8,3 +8,12 @@ export type Review = {
   review: string;
   rating: number;
 }
+
+export type Comment = {
+  cameraId: number;
+  userName: string;
+  advantage: string;
+  disadvantage: string;
+  review: string;
+  rating: number;
+}

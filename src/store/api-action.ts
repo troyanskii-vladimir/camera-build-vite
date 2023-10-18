@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/state';
 import { AxiosInstance } from 'axios';
-import { loadProducts, loadPromoProducts, setProductsLoading, loadProductData, loadSimilarProducts, loadProductReview } from './action';
+import { loadProducts, loadPromoProducts, setProductsLoading, loadProductData, loadSimilarProducts, loadProductReview, createNewComment, setNewCommentPending } from './action';
 import { Product } from '../types/product';
 import { APIRoute } from '../config';
-import { Review } from '../types/review';
+import { Comment, Review } from '../types/review';
 
 
 export const fetchProductsAction = createAsyncThunk<void, undefined, {
@@ -80,3 +80,23 @@ export const fetchProductReviewsAction = createAsyncThunk<void, string, {
     dispatch(setProductsLoading(false));
   }
 );
+
+
+export const postNewCommentAction = createAsyncThunk<void, Comment & {onSuccess: () => void}, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'postNewComment',
+  async (param, {dispatch, extra: api}) => {
+    const {cameraId, userName, advantage, disadvantage, review, rating, onSuccess} = param;
+    dispatch(setNewCommentPending(true));
+    const response = await api.post<Review>(APIRoute.Reviews, { cameraId, userName, advantage, disadvantage, review, rating });
+    if (response.status === 201) {
+      onSuccess();
+    }
+    const {data} = response;
+    dispatch(setNewCommentPending(false));
+    dispatch(createNewComment(data));
+  }
+  );

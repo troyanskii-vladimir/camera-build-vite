@@ -1,9 +1,12 @@
 import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { postNewCommentAction } from '../../store/api-action';
 
 
 type CommentHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 type ReviewFormProps = {
+  productId: number;
   onCloseButtonClick: () => void;
 }
 
@@ -29,7 +32,10 @@ const ratingMap = [
   }
 ];
 
-function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
+function ReviewForm({productId, onCloseButtonClick}: ReviewFormProps): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const isCommentPending = useAppSelector((store) => store.newCommentPending);
 
   const [comment, setComment] = useState({
     rating: '0',
@@ -39,22 +45,66 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
     review: '',
   });
 
+  const [errorField, setErrorField] = useState({
+    rating: false,
+    userName: false,
+    advantage: false,
+    disadvantage: false,
+    review: false,
+  });
+
+  const isInputsCorrect = (): boolean => !(errorField.rating || errorField.userName || errorField.advantage || errorField.disadvantage || errorField.review);
+
+  const checkInput = (): void => {
+    setErrorField({
+      ...errorField,
+      'rating': comment.rating === '0',
+      'userName': !(comment.userName.length >= MIN_COUNT_OF_TEXT_SYNBOLS && comment.userName.length <= MAX_COUNT_OF_TEXT_SYNBOLS),
+      'advantage': !(comment.advantage.length >= MIN_COUNT_OF_TEXT_SYNBOLS && comment.advantage.length <= MAX_COUNT_OF_TEXT_SYNBOLS),
+      'disadvantage': !(comment.disadvantage.length >= MIN_COUNT_OF_TEXT_SYNBOLS && comment.disadvantage.length <= MAX_COUNT_OF_TEXT_SYNBOLS),
+      'review': !(comment.review.length >= MIN_COUNT_OF_TEXT_SYNBOLS && comment.review.length <= MAX_COUNT_OF_TEXT_SYNBOLS),
+    });
+  };
+
   const handleCloseButtonClick = (): void => {
     onCloseButtonClick();
   };
 
   const handleReviewChange = ({ target }: CommentHandler) => {
+    if (target.name !== 'rating') {
+      setErrorField({ ...errorField, [target.name]: !(target.value.length >= MIN_COUNT_OF_TEXT_SYNBOLS && target.value.length <= MAX_COUNT_OF_TEXT_SYNBOLS)});
+    } else {
+      setErrorField({ ...errorField, [target.name]: false});
+    }
     setComment({ ...comment, [target.name]: target.value });
   };
 
   const handleReviewFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    // console.log(comment);
+
+    checkInput();
+
+    if (isInputsCorrect() && comment.review) {
+      dispatch(postNewCommentAction({
+        cameraId: productId,
+        userName: comment.userName,
+        advantage: comment.advantage,
+        disadvantage: comment.disadvantage,
+        review: comment.review,
+        rating: Number(comment.rating),
+        onSuccess: () => {
+          setComment({
+            rating: '0',
+            userName: '',
+            advantage: '',
+            disadvantage: '',
+            review: '',
+          });
+        }
+      }));
+    }
   };
 
-  function canSubmit () {
-    return comment.review.length < MIN_COUNT_OF_TEXT_SYNBOLS || comment.review.length > MAX_COUNT_OF_TEXT_SYNBOLS || comment.rating === '0';
-  }
 
   return (
     <div className="modal is-active">
@@ -65,7 +115,7 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
           <div className="form-review">
             <form method="post" onSubmit={handleReviewFormSubmit}>
               <div className="form-review__rate">
-                <fieldset className="rate form-review__item">
+                <fieldset className={`rate form-review__item ${errorField.rating ? 'is-invalid' : ''}`}>
                   <legend className="rate__caption">
                     Рейтинг
                     <svg width={9} height={9} aria-hidden="true">
@@ -104,7 +154,7 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
                   </div>
                   <p className="rate__message">Нужно оценить товар</p>
                 </fieldset>
-                <div className="custom-input form-review__item">
+                <div className={`custom-input form-review__item ${errorField.userName ? 'is-invalid' : ''}`}>
                   <label>
                     <span className="custom-input__label">
                       Ваше имя
@@ -118,12 +168,11 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
                       placeholder="Введите ваше имя"
                       onChange={handleReviewChange}
                       value={comment.userName}
-                      required
                     />
                   </label>
                   <p className="custom-input__error">Нужно указать имя</p>
                 </div>
-                <div className="custom-input form-review__item">
+                <div className={`custom-input form-review__item ${errorField.advantage ? 'is-invalid' : ''}`}>
                   <label>
                     <span className="custom-input__label">
                       Достоинства
@@ -137,12 +186,11 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
                       placeholder="Основные преимущества товара"
                       onChange={handleReviewChange}
                       value={comment.advantage}
-                      required
                     />
                   </label>
                   <p className="custom-input__error">Нужно указать достоинства</p>
                 </div>
-                <div className="custom-input form-review__item">
+                <div className={`custom-input form-review__item ${errorField.disadvantage ? 'is-invalid' : ''}`}>
                   <label>
                     <span className="custom-input__label">
                       Недостатки
@@ -156,12 +204,11 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
                       placeholder="Главные недостатки товара"
                       onChange={handleReviewChange}
                       value={comment.disadvantage}
-                      required
                     />
                   </label>
                   <p className="custom-input__error">Нужно указать недостатки</p>
                 </div>
-                <div className="custom-textarea form-review__item">
+                <div className={`custom-textarea form-review__item ${errorField.review ? 'is-invalid' : ''}`}>
                   <label>
                     <span className="custom-textarea__label">
                       Комментарий
@@ -171,11 +218,9 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
                     </span>
                     <textarea
                       name="review"
-                      minLength={5}
                       placeholder="Поделитесь своим опытом покупки"
                       onChange={handleReviewChange}
                       value={comment.review}
-                      required
                     />
                   </label>
                   <div className="custom-textarea__error">
@@ -186,7 +231,7 @@ function ReviewForm({onCloseButtonClick}: ReviewFormProps): JSX.Element {
               <button
                 className="btn btn--purple form-review__btn"
                 type="submit"
-                disabled={canSubmit()}
+                disabled={isCommentPending}
               >
                 Отправить отзыв
               </button>

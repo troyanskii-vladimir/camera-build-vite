@@ -215,7 +215,7 @@ function ProductPage(): JSX.Element {
         }
         {
           modalReviewActive &&
-          <ReviewForm onCloseButtonClick={handleCloseButtonClick} />
+          <ReviewForm productId={product.id} onCloseButtonClick={handleCloseButtonClick} />
         }
       </main>
       <a className="up-btn" href="#header">
