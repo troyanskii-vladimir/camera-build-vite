@@ -8,6 +8,7 @@ type CommentHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 type ReviewFormProps = {
   productId: number;
   onCloseButtonClick: () => void;
+  onSuccessSend: () => void;
 }
 
 const MIN_COUNT_OF_TEXT_SYNBOLS = 2;
@@ -32,7 +33,7 @@ const ratingMap = [
   }
 ];
 
-function ReviewForm({productId, onCloseButtonClick}: ReviewFormProps): JSX.Element {
+function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const isCommentPending = useAppSelector((store) => store.newCommentPending);
@@ -102,6 +103,7 @@ function ReviewForm({productId, onCloseButtonClick}: ReviewFormProps): JSX.Eleme
           });
         }
       }));
+      onSuccessSend();
     }
   };
 

@@ -12,6 +12,7 @@ import Page404 from '../404/404';
 import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import ReviewForm from '../../componets/review-form/review-form';
+import ModalSuccessReview from '../../componets/modal-success-review/modal-success-review';
 
 
 enum Tabs {
@@ -32,6 +33,7 @@ function ProductPage(): JSX.Element {
 
   const [modalData, setModalData] = useState<Product | null>(null);
   const [modalReviewActive, setModalReviewActive] = useState<boolean>(false);
+  const [modalSuccessReview, setModalSuccessReview] = useState<boolean>(false);
 
   useEffect(() => {
     const needToGetData = product.id !== Number(id) || Object.keys(product).length === 0;
@@ -48,6 +50,10 @@ function ProductPage(): JSX.Element {
   const tabsType = location.search.slice(6, 10) as Tabs || Tabs.Char;
   const [currentTab, setCurrentTab] = useState<Tabs>(tabsType);
 
+  const handleSuccessSend = (): void => {
+    setModalReviewActive(false);
+    setModalSuccessReview(true);
+  };
 
   const handleAddButtonClick = (prod: Product): void => {
     setModalData(prod);
@@ -56,6 +62,7 @@ function ProductPage(): JSX.Element {
   const handleCloseButtonClick = (): void => {
     setModalData(null);
     setModalReviewActive(false);
+    setModalSuccessReview(false);
   };
 
   const handleCreateReviewButtonClick = (): void => {
@@ -129,13 +136,13 @@ function ProductPage(): JSX.Element {
                     }
                     <p className="visually-hidden">Рейтинг: {product.rating}</p>
                     <p className="rate__count">
-                      <span className="visually-hidden">Всего оценок:</span>{product.reviewCount}
+                      <span className="visually-hidden">Всего оценок:</span>{reviews.length}
                     </p>
                   </div>
                   <p className="product__price">
                     <span className="visually-hidden">Цена:</span>{product.price.toLocaleString()} ₽
                   </p>
-                  <button className="btn btn--purple" type="button">
+                  <button className="btn btn--purple" type="button" onClick={() => setModalData(product)}>
                     <svg width={24} height={16} aria-hidden="true">
                       <use xlinkHref="#icon-add-basket" />
                     </svg>
@@ -215,7 +222,11 @@ function ProductPage(): JSX.Element {
         }
         {
           modalReviewActive &&
-          <ReviewForm productId={product.id} onCloseButtonClick={handleCloseButtonClick} />
+          <ReviewForm productId={product.id} onCloseButtonClick={handleCloseButtonClick} onSuccessSend={handleSuccessSend} />
+        }
+        {
+          modalSuccessReview &&
+          <ModalSuccessReview onCloseButtonClick={handleCloseButtonClick} />
         }
       </main>
       <a className="up-btn" href="#header">

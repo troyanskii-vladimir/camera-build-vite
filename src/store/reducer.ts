@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { Product } from '../types/product';
-import { loadProducts, setProductsLoading, loadPromoProducts, loadProductData, loadSimilarProducts, loadProductReview, setNewCommentPending } from './action';
+import { loadProducts, setProductsLoading, loadPromoProducts, loadProductData, loadSimilarProducts, loadProductReview, setNewCommentPending, createNewComment } from './action';
 import { PromoProduct } from '../types/promo-product';
 import { Review } from '../types/review';
 
@@ -48,5 +48,8 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setNewCommentPending, (state, action) => {
       state.newCommentPending = action.payload;
+    })
+    .addCase(createNewComment, (state, action) => {
+      state.productReviews.push(action.payload);
     });
 });
