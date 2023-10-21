@@ -21,6 +21,7 @@ function ModalSuccessReview({onCloseButtonClick}: ModalSuccessReviewProps): JSX.
               className="btn btn--purple modal__btn modal__btn--fit-width"
               type="button"
               onClick={handleCloseButtonClick}
+              autoFocus
             >
               Вернуться к покупкам
             </button>

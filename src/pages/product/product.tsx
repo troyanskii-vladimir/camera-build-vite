@@ -64,16 +64,19 @@ function ProductPage(): JSX.Element {
   };
 
   const handleAddButtonClick = (prod: Product): void => {
+    document.body.classList.add('scroll-lock');
     setModalData(prod);
   };
 
   const handleCloseButtonClick = (): void => {
+    document.body.classList.remove('scroll-lock');
     setModalData(null);
     setModalReviewActive(false);
     setModalSuccessReview(false);
   };
 
   const handleCreateReviewButtonClick = (): void => {
+    document.body.classList.add('scroll-lock');
     setModalReviewActive(true);
   };
 
@@ -150,7 +153,11 @@ function ProductPage(): JSX.Element {
                   <p className="product__price">
                     <span className="visually-hidden">Цена:</span>{product.price.toLocaleString()} ₽
                   </p>
-                  <button className="btn btn--purple" type="button" onClick={() => setModalData(product)}>
+                  <button className="btn btn--purple" type="button" onClick={() => {
+                    document.body.classList.add('scroll-lock');
+                    setModalData(product);
+                  }}
+                  >
                     <svg width={24} height={16} aria-hidden="true">
                       <use xlinkHref="#icon-add-basket" />
                     </svg>
