@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { toast } from 'react-toastify';
 
+
 const BACKEND_URL = 'https://camera-shop.accelerator.pages.academy';
 const REQUEST_TIMEOUT = 5000;
 
@@ -31,7 +32,8 @@ export const createAPI = (): AxiosInstance => {
       if (error.response && shouldDisplayError(error.response)) {
         const detailMessage = (error.response.data);
 
-        toast.warn(detailMessage.message);
+        //Сервер на все ошибки выдает пустое тело ответа, поэтому вывожу стандартные текст
+        toast.warn(`${detailMessage.type}, Ошибка получения данных`);
       }
 
       throw error;

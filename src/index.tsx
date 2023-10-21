@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './componets/app/app';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/ReactToastify.css';
 import { store } from './store';
 import { Provider } from 'react-redux';
 

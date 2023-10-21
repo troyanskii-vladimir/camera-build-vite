@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import { Product } from '../../types/product';
+// import onClickOutside from 'react-onclickoutside';
 
 
 type ModalAddItemProps = {
@@ -11,9 +13,34 @@ function ModalAddItem({product, onCloseButtonClick}: ModalAddItemProps): JSX.Ele
     onCloseButtonClick();
   };
 
+  const root = useRef<HTMLDivElement>(null);
+
+  // ModalAddItem.handleClickOutside = () => {
+  //   onCloseButtonClick();
+  // };
+  // const onClick = (e: MouseEvent) => {
+  //   if (!root.current?.contains(e.target)) {
+
+  //   }
+  // };
+
+
+  // useEffect(() => {
+  //   // const onClick = (evt: MouseEvent) => {
+  //   //   if (root.current && !root.current.contains(evt.target)) {
+  //   //     console.log('test');
+  //   //   }
+  //   // };
+  //   if (root.current) {
+  //     document.addEventListener('click', onClick);
+  //   }
+
+  //   return () => document.removeEventListener('click', onClick);
+  // }, []);
+
 
   return (
-    <div className="modal is-active">
+    <div ref={root} className="modal is-active">
       <div className="modal__wrapper">
         <div className="modal__overlay" />
         <div className="modal__content">
@@ -76,5 +103,11 @@ function ModalAddItem({product, onCloseButtonClick}: ModalAddItemProps): JSX.Ele
     </div>
   );
 }
+
+// const clickOutsideConfig = {
+//   handleClickOutside: () => ModalAddItem.handleClickOutside,
+// };
+
+// export default onClickOutside(ModalAddItem, clickOutsideConfig);
 
 export default ModalAddItem;
