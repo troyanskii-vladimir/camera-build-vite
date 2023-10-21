@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../config';
-
-const COUNT_OF_NUMBERS = 3;
+import { COUNT_OF_NUMBERS_PAGINATION } from '../../config';
 
 
 type PaginationProps = {
@@ -15,7 +14,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
   const pageNumbers = (page: number): number[] => {
     const result: number[] = [];
 
-    const maxPage = Math.ceil(page / COUNT_OF_NUMBERS) * 3;
+    const maxPage = Math.ceil(page / COUNT_OF_NUMBERS_PAGINATION) * COUNT_OF_NUMBERS_PAGINATION;
     const minPage = maxPage - 2;
 
     for (let i = minPage; i <= maxPage; i++) {

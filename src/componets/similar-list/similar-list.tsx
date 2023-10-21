@@ -1,22 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Product } from '../../types/product';
-import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import SliderSimilar from '../slider-similar/slider-similar';
 
-
-// const COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE = 3;
 
 type SimilarListProps = {
   products: Product[];
   onAddButtonClick: (product: Product) => void;
 }
 
-function SimilarList({products, onAddButtonClick}: SimilarListProps): JSX.Element {
-  // const [activeProductNumbers, setActiveProductNumbers] = useState([0, 1, 2]);
 
-  // useEffect(() => {
-  //   setActiveProductNumbers([0, 1, 2]);
-  // }, [products]);
+function SimilarList({products, onAddButtonClick}: SimilarListProps): JSX.Element {
 
   return (
     <div className="page-content__section">

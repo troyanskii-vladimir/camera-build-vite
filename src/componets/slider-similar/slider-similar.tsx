@@ -4,6 +4,7 @@ import 'swiper/css/navigation';
 import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import { A11y, Navigation } from 'swiper/modules';
+import { COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE } from '../../config';
 
 
 type SliderSimilarProps = {
@@ -11,7 +12,6 @@ type SliderSimilarProps = {
   onAddButtonClick: (product: Product) => void;
 }
 
-const COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE = 3;
 
 function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.Element {
 

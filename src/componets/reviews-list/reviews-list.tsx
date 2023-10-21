@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Review } from '../../types/review';
 import ReviewsItem from '../review-item/review-item';
+import { COUNT_OF_REVIEWS_PART } from '../../config';
 
-
-const COUNT_OF_REVIEWS_PART = 3;
 
 type ReviewsListProps = {
   reviews: Review[];
   onCreateReviewButtonClick: () => void;
 }
+
 
 function ReviewsList({reviews, onCreateReviewButtonClick}: ReviewsListProps): JSX.Element {
   const [activeReviews, setActiveReviewsIndex] = useState<Review[]>([]);

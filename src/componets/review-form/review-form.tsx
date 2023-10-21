@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { postNewCommentAction } from '../../store/api-action';
+import { MAX_COUNT_OF_TEXT_SYNBOLS, MIN_COUNT_OF_TEXT_SYNBOLS } from '../../config';
 
 
 type CommentHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -10,9 +11,6 @@ type ReviewFormProps = {
   onCloseButtonClick: () => void;
   onSuccessSend: () => void;
 }
-
-const MIN_COUNT_OF_TEXT_SYNBOLS = 2;
-const MAX_COUNT_OF_TEXT_SYNBOLS = 160;
 
 const ratingMap = [
   {

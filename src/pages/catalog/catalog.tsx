@@ -10,8 +10,7 @@ import { useAppSelector } from '../../hooks';
 import { useEffect, useState } from 'react';
 import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
-
-const DISPLAYED_PRODUCTS = 9;
+import { DISPLAYED_PRODUCTS } from '../../config';
 
 
 function MainPage(): JSX.Element {
