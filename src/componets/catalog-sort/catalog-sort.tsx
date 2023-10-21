@@ -51,7 +51,7 @@ function CatalogSort(): JSX.Element {
         </div>
       </form>
     </div>
-    );
+  );
 }
 
 export default CatalogSort;

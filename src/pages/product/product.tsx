@@ -50,6 +50,14 @@ function ProductPage(): JSX.Element {
   const tabsType = location.search.slice(6, 10) as Tabs || Tabs.Char;
   const [currentTab, setCurrentTab] = useState<Tabs>(tabsType);
 
+  const handleToTopButtonClick = (): void => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const handleSuccessSend = (): void => {
     setModalReviewActive(false);
     setModalSuccessReview(true);
@@ -229,11 +237,11 @@ function ProductPage(): JSX.Element {
           <ModalSuccessReview onCloseButtonClick={handleCloseButtonClick} />
         }
       </main>
-      <a className="up-btn" href="#header">
+      <button className="up-btn" type="button" onClick={handleToTopButtonClick}>
         <svg width={12} height={18} aria-hidden="true">
           <use xlinkHref="#icon-arrow2" />
         </svg>
-      </a>
+      </button>
       <Footer />
     </div>
   );
