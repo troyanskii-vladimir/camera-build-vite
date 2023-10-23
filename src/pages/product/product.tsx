@@ -31,7 +31,7 @@ function ProductPage(): JSX.Element {
   const reviews = useAppSelector((store) => store.productReviews);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
-  const [modalData, setModalData] = useState<Product | null>();
+  const [modalData, setModalData] = useState<Product | null>(null);
   const [modalReviewActive, setModalReviewActive] = useState<boolean>(false);
   const [modalSuccessReview, setModalSuccessReview] = useState<boolean>(false);
 
