@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
+import { ChangeEvent, FormEvent, Fragment, MutableRefObject, useState } from 'react';
+import { useDetectClickOutside } from 'react-detect-click-outside';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { postNewCommentAction } from '../../store/api-action';
 import { MAX_COUNT_OF_TEXT_SYNBOLS, MIN_COUNT_OF_TEXT_SYNBOLS } from '../../config';
@@ -105,12 +106,17 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
     }
   };
 
+  const ref: MutableRefObject<null> = useDetectClickOutside({
+    onTriggered: handleCloseButtonClick,
+    disableClick: true,
+  });
+
 
   return (
     <div className="modal is-active">
       <div className="modal__wrapper">
         <div className="modal__overlay" />
-        <div className="modal__content">
+        <div ref={ref} className="modal__content">
           <p className="title title--h4">Оставить отзыв</p>
           <div className="form-review">
             <form method="post" onSubmit={handleReviewFormSubmit}>

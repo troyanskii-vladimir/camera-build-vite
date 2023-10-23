@@ -1,3 +1,7 @@
+import { MutableRefObject } from 'react';
+import { useDetectClickOutside } from 'react-detect-click-outside';
+
+
 type ModalSuccessReviewProps = {
   onCloseButtonClick: () => void;
 }
@@ -7,11 +11,16 @@ function ModalSuccessReview({onCloseButtonClick}: ModalSuccessReviewProps): JSX.
     onCloseButtonClick();
   };
 
+  const ref: MutableRefObject<null> = useDetectClickOutside({
+    onTriggered: handleCloseButtonClick,
+    disableClick: true,
+  });
+
   return (
     <div className="modal is-active modal--narrow">
       <div className="modal__wrapper">
         <div className="modal__overlay" />
-        <div className="modal__content">
+        <div ref={ref} className="modal__content">
           <p className="title title--h4">Спасибо за отзыв</p>
           <svg className="modal__icon" width={80} height={78} aria-hidden="true">
             <use xlinkHref="#icon-review-success" />
