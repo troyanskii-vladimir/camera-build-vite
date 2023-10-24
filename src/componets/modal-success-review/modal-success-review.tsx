@@ -13,7 +13,7 @@ function ModalSuccessReview({onCloseButtonClick}: ModalSuccessReviewProps): JSX.
 
   const ref: MutableRefObject<null> = useDetectClickOutside({
     onTriggered: handleCloseButtonClick,
-    disableClick: true,
+    disableClick: false,
   });
 
   return (

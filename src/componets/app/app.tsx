@@ -8,6 +8,7 @@ import { AppRoute } from '../../config';
 import { useEffect } from 'react';
 import { fetchProductsAction, fetchPromoProductsAction } from '../../store/api-action';
 import { useAppDispatch } from '../../hooks';
+import ScrollToTop from '../scroll-to-top/scroll-to-top';
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ function App(): JSX.Element {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
 
           <Route

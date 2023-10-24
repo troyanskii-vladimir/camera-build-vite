@@ -34,6 +34,7 @@ const ratingMap = [
 
 function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const [isFirstClick, setIsFirstClick] = useState(true);
 
   const isCommentPending = useAppSelector((store) => store.newCommentPending);
 
@@ -67,7 +68,11 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
   };
 
   const handleCloseButtonClick = (): void => {
-    onCloseButtonClick();
+    if (!isFirstClick) {
+      onCloseButtonClick();
+    } else {
+      setIsFirstClick(false);
+    }
   };
 
   const handleReviewChange = ({ target }: CommentHandler) => {
@@ -108,7 +113,7 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
 
   const ref: MutableRefObject<null> = useDetectClickOutside({
     onTriggered: handleCloseButtonClick,
-    disableClick: true,
+    disableClick: false,
   });
 
 
