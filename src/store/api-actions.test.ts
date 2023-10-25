@@ -3,12 +3,12 @@ import { configureMockStore } from '@jedmao/redux-mock-store/';
 import MockAdapter from 'axios-mock-adapter';
 import thunk from 'redux-thunk';
 import { Action } from 'redux';
-import { AppThunkDispatch, extractActionsTypes, makeFakeComment, makeFakeProduct, makeFakePromoProduct, makeFakeReview } from '../utils/mocks';
+import { AppThunkDispatch, extractActionsTypes, makeFakeProduct, makeFakePromoProduct, makeFakeReview } from '../utils/mocks';
 import { State } from '../types/state';
 import { Product } from '../types/product';
-import { fetchProductDataAction, fetchProductReviewsAction, fetchProductsAction, fetchPromoProductsAction, fetchSimilarProductsAction, postNewCommentAction } from './api-action';
+import { fetchProductDataAction, fetchProductReviewsAction, fetchProductsAction, fetchPromoProductsAction, fetchSimilarProductsAction } from './api-action';
 import { APIRoute } from '../config';
-import { createNewComment, loadProductData, loadProductReview, loadProducts, loadPromoProducts, loadSimilarProducts, setNewCommentPending, setProductsLoading } from './action';
+import { loadProductData, loadProductReview, loadProducts, loadPromoProducts, loadSimilarProducts, setProductsLoading } from './action';
 
 
 describe('Async actions', () => {
@@ -213,44 +213,4 @@ describe('Async actions', () => {
       ]);
     });
   });
-
-
-  // describe('postNewCommentAction', () => {
-  //   const mockProduct = makeFakePromoProduct();
-  //   const mockProductId = mockProduct.id;
-  //   const mockReview = makeFakeReview();
-  //   const mockComment = makeFakeComment();
-
-  //   it('should dispatch "postNewCommentAction.pending" and "postNewCommentAction.fulfilled" with thunk "postNewCommentAction"', async () => {
-  //     mockAxiosAdapter.onPost(APIRoute.Reviews).reply(200, mockReview);
-
-  //     await store.dispatch(postNewCommentAction(mockComment));
-  //     const extractedActionsType = extractActionsTypes(store.getActions());
-  //     const postNewCommentActionFullfiled = store.getActions().at(2) as ReturnType<typeof postNewCommentAction.fulfilled>;
-
-  //     expect(extractedActionsType).toEqual([
-  //       postNewCommentAction.pending.type,
-  //       setNewCommentPending.type,
-  //       createNewComment.type,
-  //       setNewCommentPending.type,
-  //       postNewCommentAction.fulfilled.type,
-  //     ]);
-  //     expect(postNewCommentActionFullfiled.payload).toEqual(mockReview);
-  //   });
-
-
-  //   it('should dispatch "postNewCommentAction.pending" and "postNewCommentAction.rejected" with thunk "postNewCommentAction" with server response 400', async () => {
-  //     mockAxiosAdapter.onPost(APIRoute.Reviews).reply(400);
-
-  //     await store.dispatch(postNewCommentAction(mockComment));
-  //     const actions = extractActionsTypes(store.getActions());
-
-  //     expect(actions).toEqual([
-  //       postNewCommentAction.pending.type,
-  //       setNewCommentPending.type,
-  //       postNewCommentAction.rejected.type,
-  //     ]);
-  //   });
-  // });
-
 });
