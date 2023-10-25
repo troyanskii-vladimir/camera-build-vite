@@ -153,7 +153,9 @@ function ProductPage(): JSX.Element {
                   <p className="product__price">
                     <span className="visually-hidden">Цена:</span>{product.price.toLocaleString()} ₽
                   </p>
-                  <button className="btn btn--purple" type="button" onClick={() => {
+                  <button className="btn btn--purple" type="button" onClick={(evt) => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
                     document.body.classList.add('scroll-lock');
                     setModalData(product);
                   }}

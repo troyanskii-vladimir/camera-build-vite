@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { Review } from '../../types/review';
 import ReviewsItem from '../review-item/review-item';
 import { COUNT_OF_REVIEWS_PART } from '../../config';
@@ -22,7 +22,9 @@ function ReviewsList({reviews, onCreateReviewButtonClick}: ReviewsListProps): JS
   }, [reviews]);
 
 
-  const handleCreateReviewButtonClick = () => {
+  const handleCreateReviewButtonClick = (e: SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     onCreateReviewButtonClick();
   };
 

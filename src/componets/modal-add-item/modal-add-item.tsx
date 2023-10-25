@@ -1,4 +1,4 @@
-import { MutableRefObject, useState } from 'react';
+import { MutableRefObject } from 'react';
 import { Product } from '../../types/product';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 
@@ -9,14 +9,9 @@ type ModalAddItemProps = {
 }
 
 function ModalAddItem({product, onCloseButtonClick}: ModalAddItemProps): JSX.Element {
-  const [isFirstClick, setIsFirstClick] = useState(true);
 
   const handleCloseButtonClick = (): void => {
-    if (product && !isFirstClick) {
-      onCloseButtonClick();
-    } else {
-      setIsFirstClick(false);
-    }
+    onCloseButtonClick();
   };
 
   const ref: MutableRefObject<null> = useDetectClickOutside({
