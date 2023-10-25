@@ -56,4 +56,15 @@ export const makeFakeComment = (): Comment => ({
   rating: datatype.number(5),
 } as Comment);
 
+export const makeFakeStore = (initialState?: Partial<State>): State => ({
+  products: [],
+  promoProducts: [],
+  isProductsLoading: true,
+  productData: {} as Product,
+  similarProducts: [],
+  productReviews: [],
+  newCommentPending: false,
+  ...initialState ?? {}
+});
+
 export const extractActionsTypes = (actions: Action<string>[]) => actions.map(({ type }) => type);

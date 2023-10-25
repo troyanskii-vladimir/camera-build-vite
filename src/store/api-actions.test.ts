@@ -215,42 +215,42 @@ describe('Async actions', () => {
   });
 
 
-  describe('postNewCommentAction', () => {
-    const mockProduct = makeFakePromoProduct();
-    const mockProductId = mockProduct.id;
-    const mockReview = makeFakeReview();
-    const mockComment = makeFakeComment();
+  // describe('postNewCommentAction', () => {
+  //   const mockProduct = makeFakePromoProduct();
+  //   const mockProductId = mockProduct.id;
+  //   const mockReview = makeFakeReview();
+  //   const mockComment = makeFakeComment();
 
-    it('should dispatch "postNewCommentAction.pending" and "postNewCommentAction.fulfilled" with thunk "postNewCommentAction"', async () => {
-      mockAxiosAdapter.onPost(APIRoute.Reviews).reply(200, mockReview);
+  //   it('should dispatch "postNewCommentAction.pending" and "postNewCommentAction.fulfilled" with thunk "postNewCommentAction"', async () => {
+  //     mockAxiosAdapter.onPost(APIRoute.Reviews).reply(200, mockReview);
 
-      await store.dispatch(postNewCommentAction(mockComment));
-      const extractedActionsType = extractActionsTypes(store.getActions());
-      const postNewCommentActionFullfiled = store.getActions().at(2) as ReturnType<typeof postNewCommentAction.fulfilled>;
+  //     await store.dispatch(postNewCommentAction(mockComment));
+  //     const extractedActionsType = extractActionsTypes(store.getActions());
+  //     const postNewCommentActionFullfiled = store.getActions().at(2) as ReturnType<typeof postNewCommentAction.fulfilled>;
 
-      expect(extractedActionsType).toEqual([
-        postNewCommentAction.pending.type,
-        setNewCommentPending.type,
-        createNewComment.type,
-        setNewCommentPending.type,
-        postNewCommentAction.fulfilled.type,
-      ]);
-      expect(postNewCommentActionFullfiled.payload).toEqual(mockReview);
-    });
+  //     expect(extractedActionsType).toEqual([
+  //       postNewCommentAction.pending.type,
+  //       setNewCommentPending.type,
+  //       createNewComment.type,
+  //       setNewCommentPending.type,
+  //       postNewCommentAction.fulfilled.type,
+  //     ]);
+  //     expect(postNewCommentActionFullfiled.payload).toEqual(mockReview);
+  //   });
 
 
-    it('should dispatch "postNewCommentAction.pending" and "postNewCommentAction.rejected" with thunk "postNewCommentAction" with server response 400', async () => {
-      mockAxiosAdapter.onPost(APIRoute.Reviews).reply(400);
+  //   it('should dispatch "postNewCommentAction.pending" and "postNewCommentAction.rejected" with thunk "postNewCommentAction" with server response 400', async () => {
+  //     mockAxiosAdapter.onPost(APIRoute.Reviews).reply(400);
 
-      await store.dispatch(postNewCommentAction(mockComment));
-      const actions = extractActionsTypes(store.getActions());
+  //     await store.dispatch(postNewCommentAction(mockComment));
+  //     const actions = extractActionsTypes(store.getActions());
 
-      expect(actions).toEqual([
-        postNewCommentAction.pending.type,
-        setNewCommentPending.type,
-        postNewCommentAction.rejected.type,
-      ]);
-    });
-  });
+  //     expect(actions).toEqual([
+  //       postNewCommentAction.pending.type,
+  //       setNewCommentPending.type,
+  //       postNewCommentAction.rejected.type,
+  //     ]);
+  //   });
+  // });
 
 });

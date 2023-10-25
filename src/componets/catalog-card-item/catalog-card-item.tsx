@@ -6,10 +6,9 @@ import { AppRoute } from '../../config';
 type CatalogCardItemProps = {
   product: Product;
   onAddButtonClick: (product: Product) => void;
-  isActive?: boolean;
 }
 
-function CatalogCardItem({product, onAddButtonClick, isActive}: CatalogCardItemProps): JSX.Element {
+function CatalogCardItem({product, onAddButtonClick}: CatalogCardItemProps): JSX.Element {
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const handleAddButtonClick = (): void => {
@@ -17,7 +16,7 @@ function CatalogCardItem({product, onAddButtonClick, isActive}: CatalogCardItemP
   };
 
   return (
-    <div className={`product-card ${isActive ? 'is-active' : ''}`}>
+    <div className='product-card is-active'>
       <div className="product-card__img">
         <picture>
           <source

@@ -40,7 +40,6 @@ function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.El
                     key={product.id}
                     product={product}
                     onAddButtonClick={onAddButtonClick}
-                    isActive
                   />
                 ))
               }

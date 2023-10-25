@@ -11,6 +11,6 @@ export const store = configureStore({
     getDefaultMiddleware({
       thunk: {
         extraArgument: api,
-      }
-    })
+      },
+    }),
 });

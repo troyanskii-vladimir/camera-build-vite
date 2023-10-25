@@ -174,6 +174,7 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
                       placeholder="Введите ваше имя"
                       onChange={handleReviewChange}
                       value={comment.userName}
+                      data-testid="usernameElement"
                     />
                   </label>
                   <p className="custom-input__error">Нужно указать имя</p>
@@ -192,6 +193,7 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
                       placeholder="Основные преимущества товара"
                       onChange={handleReviewChange}
                       value={comment.advantage}
+                      data-testid="advantageElement"
                     />
                   </label>
                   <p className="custom-input__error">Нужно указать достоинства</p>
@@ -210,6 +212,7 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
                       placeholder="Главные недостатки товара"
                       onChange={handleReviewChange}
                       value={comment.disadvantage}
+                      data-testid="disadvantageElement"
                     />
                   </label>
                   <p className="custom-input__error">Нужно указать недостатки</p>
@@ -227,6 +230,7 @@ function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormPr
                       placeholder="Поделитесь своим опытом покупки"
                       onChange={handleReviewChange}
                       value={comment.review}
+                      data-testid="reviewElement"
                     />
                   </label>
                   <div className="custom-textarea__error">

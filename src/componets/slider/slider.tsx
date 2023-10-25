@@ -4,8 +4,6 @@ import styles from './styles.module.css';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
-
-
 import Banner from '../banner/banner';
 import { PromoProduct } from '../../types/promo-product';
 

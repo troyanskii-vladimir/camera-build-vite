@@ -136,7 +136,7 @@ function ProductPage(): JSX.Element {
                   </picture>
                 </div>
                 <div className="product__content">
-                  <h1 className="title title--h3">{product.name}</h1>
+                  <h1 className="title title--h3" data-testid="productname">{product.name}</h1>
                   <div className="rate product__rate">
                     {
                       ratingArray.map((star) => (
