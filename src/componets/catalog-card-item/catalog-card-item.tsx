@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../../types/product';
-import { AppRoute } from '../../config';
+import { AppRoute, COUNT_OF_RATING_STARS } from '../../config';
 
 
 type CatalogCardItemProps = {
@@ -9,7 +9,7 @@ type CatalogCardItemProps = {
 }
 
 function CatalogCardItem({product, onAddButtonClick}: CatalogCardItemProps): JSX.Element {
-  const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
+  const ratingArray = Array.from({ length: COUNT_OF_RATING_STARS }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const handleAddButtonClick = (): void => {
     onAddButtonClick(product);

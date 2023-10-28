@@ -3,6 +3,7 @@ import { useDetectClickOutside } from 'react-detect-click-outside';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { postNewCommentAction } from '../../store/api-action';
 import { MAX_COUNT_OF_TEXT_SYNBOLS, MIN_COUNT_OF_TEXT_SYNBOLS } from '../../config';
+import { getNewCommentPendingStatus } from '../../store/reviews-data/selectors';
 
 
 type CommentHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -35,7 +36,7 @@ const ratingMap = [
 function ReviewForm({productId, onCloseButtonClick, onSuccessSend}: ReviewFormProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const isCommentPending = useAppSelector((store) => store.newCommentPending);
+  const isCommentPending = useAppSelector(getNewCommentPendingStatus);
 
   const [comment, setComment] = useState({
     rating: '0',

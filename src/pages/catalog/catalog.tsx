@@ -11,12 +11,13 @@ import { useEffect, useState } from 'react';
 import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import { DISPLAYED_PRODUCTS } from '../../config';
+import { getProducts, getProductsLoadingStatus, getPromoProducts } from '../../store/product-data/selectors';
 
 
 function MainPage(): JSX.Element {
-  const products = useAppSelector((store) => store.products);
-  const promoProducts = useAppSelector((store) => store.promoProducts);
-  const isProductsLoading = useAppSelector((store) => store.isProductsLoading);
+  const products = useAppSelector(getProducts);
+  const promoProducts = useAppSelector(getPromoProducts);
+  const isProductsLoading = useAppSelector(getProductsLoadingStatus);
 
   const location = useLocation();
   const page = location.search.at(-1) || '1';

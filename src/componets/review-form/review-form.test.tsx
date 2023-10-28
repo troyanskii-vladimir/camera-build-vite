@@ -1,22 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { withStore } from '../../utils/mock-component';
+import { withHistory, withStore } from '../../utils/mock-component';
 import ReviewForm from './review-form';
-import { makeFakeComment, makeFakeProduct } from '../../utils/mocks';
+import { makeFakeComment, makeFakeProduct, makeFakeStore } from '../../utils/mocks';
+import { ReducerNames } from '../../config';
 
 
 describe('Component: ReviewForm', () => {
   const fakeProduct = makeFakeProduct();
   const fakeComment = makeFakeComment();
 
-  it('should render correctly', () => {
+  it('should render correctly 1', () => {
     const usernameText = 'Ваше имя';
     const advantageText = 'Достоинства';
     const disadvantageText = 'Недостатки';
     const reviewText = 'Комментарий';
-    const { withStoreComponent } = withStore(<ReviewForm productId={fakeProduct.id} onCloseButtonClick={() => (null)} onSuccessSend={() => (null)} />, {});
+    const { withStoreComponent } = withStore(<ReviewForm productId={fakeProduct.id} onCloseButtonClick={() => (null)} onSuccessSend={() => (null)} />, makeFakeStore({
+      [ReducerNames.ReviewsData]: {
+        productReviews: [],
+        newCommentPending: false,
+      }
+    }));
+    const preparedComponent = withHistory(withStoreComponent);
 
-    render(withStoreComponent);
+    render(preparedComponent);
 
     expect(screen.getByText(usernameText)).toBeInTheDocument();
     expect(screen.getByText(advantageText)).toBeInTheDocument();
@@ -34,7 +41,12 @@ describe('Component: ReviewForm', () => {
     const expectedAdvantageValue = fakeComment.advantage;
     const expectedDisadvantageValue = fakeComment.disadvantage;
     const expectedReviewValue = fakeComment.review;
-    const { withStoreComponent } = withStore(<ReviewForm productId={fakeProduct.id} onCloseButtonClick={() => (null)} onSuccessSend={() => (null)} />, {});
+    const { withStoreComponent } = withStore(<ReviewForm productId={fakeProduct.id} onCloseButtonClick={() => (null)} onSuccessSend={() => (null)} />, makeFakeStore({
+      [ReducerNames.ReviewsData]: {
+        productReviews: [],
+        newCommentPending: false,
+      }
+    }));
 
     render(withStoreComponent);
     await userEvent.type(

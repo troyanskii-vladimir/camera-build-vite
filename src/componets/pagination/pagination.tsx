@@ -28,11 +28,14 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
 
   const pages = pageNumbers(currentPage);
 
+  const isPreviousButtonActive = currentPage >= 4;
+  const isNextButtonActive = countOfPages - currentPage > 1;
+
   return (
     <div className="pagination">
       <ul className="pagination__list">
         {
-          currentPage >= 4 &&
+          isPreviousButtonActive &&
           <li className="pagination__item">
             <Link
               className="pagination__link pagination__link--text"
@@ -61,7 +64,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
           ))
         }
         {
-          countOfPages - currentPage > 1 &&
+          isNextButtonActive &&
           <li className="pagination__item">
             <Link
               className="pagination__link pagination__link--text"

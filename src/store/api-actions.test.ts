@@ -5,10 +5,10 @@ import thunk from 'redux-thunk';
 import { Action } from 'redux';
 import { AppThunkDispatch, extractActionsTypes, makeFakeProduct, makeFakePromoProduct, makeFakeReview } from '../utils/mocks';
 import { State } from '../types/state';
-import { Product } from '../types/product';
 import { fetchProductDataAction, fetchProductReviewsAction, fetchProductsAction, fetchPromoProductsAction, fetchSimilarProductsAction } from './api-action';
 import { APIRoute } from '../config';
-import { loadProductData, loadProductReview, loadProducts, loadPromoProducts, loadSimilarProducts, setProductsLoading } from './action';
+import { loadProductData, loadProducts, loadPromoProducts, loadSimilarProducts, setProductsLoading } from './product-data/actions';
+import { loadProductReview } from './reviews-data/actions';
 
 
 describe('Async actions', () => {
@@ -19,15 +19,7 @@ describe('Async actions', () => {
   let store: ReturnType<typeof mockStoreCreator>;
 
   beforeEach(() => {
-    store = mockStoreCreator({
-      products: [],
-      promoProducts: [],
-      isProductsLoading: true,
-      productData: {} as Product,
-      similarProducts: [],
-      productReviews: [],
-      newCommentPending: false,
-    });
+    store = mockStoreCreator({ ProductData: { products: [] } });
   });
 
   describe('fetchProductsAction', () => {

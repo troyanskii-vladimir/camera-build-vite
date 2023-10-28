@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/state';
 import { AxiosInstance } from 'axios';
-import { loadProducts, loadPromoProducts, setProductsLoading, loadProductData, loadSimilarProducts, loadProductReview, createNewComment, setNewCommentPending } from './action';
 import { Product } from '../types/product';
 import { APIRoute } from '../config';
 import { Comment, Review } from '../types/review';
+import { loadProductData, loadProducts, loadPromoProducts, loadSimilarProducts, setProductsLoading } from './product-data/actions';
+import { createNewComment, loadProductReview, setNewCommentPending } from './reviews-data/actions';
 
 
 export const fetchProductsAction = createAsyncThunk<void, undefined, {

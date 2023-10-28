@@ -1,11 +1,7 @@
-
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 import { toast } from 'react-toastify';
-
-
-const BACKEND_URL = 'https://camera-shop.accelerator.pages.academy';
-const REQUEST_TIMEOUT = 5000;
+import { BACKEND_URL, REQUEST_TIMEOUT } from '../config';
 
 
 type DetailMessageType = {

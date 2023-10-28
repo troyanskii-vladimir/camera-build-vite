@@ -13,6 +13,8 @@ import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import ReviewForm from '../../componets/review-form/review-form';
 import ModalSuccessReview from '../../componets/modal-success-review/modal-success-review';
+import { getProductData, getSimilarProducts } from '../../store/product-data/selectors';
+import { getReviews } from '../../store/reviews-data/selectors';
 
 
 enum Tabs {
@@ -26,9 +28,9 @@ function ProductPage(): JSX.Element {
 
   const {id} = useParams();
 
-  const product = useAppSelector((store) => store.productData);
-  const similarProducts = useAppSelector((store) => store.similarProducts);
-  const reviews = useAppSelector((store) => store.productReviews);
+  const product = useAppSelector(getProductData);
+  const similarProducts = useAppSelector(getSimilarProducts);
+  const reviews = useAppSelector(getReviews);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const [modalData, setModalData] = useState<Product | null>(null);

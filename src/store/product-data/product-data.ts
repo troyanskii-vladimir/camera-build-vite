@@ -1,8 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Product } from '../types/product';
-import { loadProducts, setProductsLoading, loadPromoProducts, loadProductData, loadSimilarProducts, loadProductReview, setNewCommentPending, createNewComment } from './action';
-import { PromoProduct } from '../types/promo-product';
-import { Review } from '../types/review';
+import { Product } from '../../types/product';
+import { PromoProduct } from '../../types/promo-product';
+import { loadProductData, loadProducts, loadPromoProducts, loadSimilarProducts, setProductsLoading } from './actions';
 
 
 type InitialState = {
@@ -11,8 +10,6 @@ type InitialState = {
   isProductsLoading: boolean;
   productData: Product;
   similarProducts: Product[];
-  productReviews: Review[];
-  newCommentPending: boolean;
 }
 
 const initialState: InitialState = {
@@ -21,12 +18,9 @@ const initialState: InitialState = {
   isProductsLoading: true,
   productData: {} as Product,
   similarProducts: [],
-  productReviews: [],
-  newCommentPending: false,
 };
 
-
-export const reducer = createReducer(initialState, (builder) => {
+export const ProductData = createReducer(initialState, (builder) => {
   builder
     .addCase(loadProducts, (state, action) => {
       state.products = action.payload;
@@ -42,14 +36,5 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(loadSimilarProducts, (state, action) => {
       state.similarProducts = action.payload;
-    })
-    .addCase(loadProductReview, (state, action) => {
-      state.productReviews = action.payload;
-    })
-    .addCase(setNewCommentPending, (state, action) => {
-      state.newCommentPending = action.payload;
-    })
-    .addCase(createNewComment, (state, action) => {
-      state.productReviews.push(action.payload);
     });
 });

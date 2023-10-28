@@ -2,8 +2,9 @@ import { render, screen, within } from '@testing-library/react';
 import { withHistory, withStore } from '../../utils/mock-component';
 import App from './app';
 import { MemoryHistory, createMemoryHistory } from 'history';
-import { AppRoute } from '../../config';
+import { AppRoute, ReducerNames } from '../../config';
 import { makeFakeProduct, makeFakePromoProduct, makeFakeReview, makeFakeStore } from '../../utils/mocks';
+import { Product } from '../../types/product';
 
 
 describe('App Routing', () => {
@@ -16,11 +17,13 @@ describe('App Routing', () => {
 
   it('should render catalog page when user navigate to "/" route', () => {
     const fakeProducts = [makeFakeProduct(), makeFakeProduct()];
-    const { withStoreComponent } = withStore(<App />, makeFakeStore({
+    const { withStoreComponent } = withStore(<App />, makeFakeStore({ [ReducerNames.ProductData]: {
       products: fakeProducts,
       promoProducts: [makeFakePromoProduct()],
       isProductsLoading: false,
-    }));
+      productData: {} as Product,
+      similarProducts: [],
+    }}));
     const withHistoryComponent = withHistory(withStoreComponent, mockHistory);
     mockHistory.push(AppRoute.Catalog);
     const expectedText = 'Каталог фото- и видеотехники';
@@ -35,11 +38,17 @@ describe('App Routing', () => {
   it('should render product page when user navigate to "/" route', () => {
     const fakeProduct = makeFakeProduct();
     const { withStoreComponent } = withStore(<App />, makeFakeStore({
-      products: [makeFakeProduct(), fakeProduct],
-      productData: fakeProduct,
-      similarProducts: [makeFakeProduct()],
-      isProductsLoading: false,
-      productReviews: [makeFakeReview()],
+      [ReducerNames.ProductData]: {
+        products: [makeFakeProduct(), fakeProduct],
+        promoProducts: [makeFakePromoProduct()],
+        isProductsLoading: false,
+        productData: fakeProduct,
+        similarProducts: [makeFakeProduct()],
+      },
+      [ReducerNames.ReviewsData]: {
+        productReviews: [makeFakeReview()],
+        newCommentPending: false,
+      }
     }));
     const withHistoryComponent = withHistory(withStoreComponent, mockHistory);
     mockHistory.push(`${AppRoute.Product}/${fakeProduct.id}`);

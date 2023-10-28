@@ -5,6 +5,7 @@ import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import { A11y, Navigation } from 'swiper/modules';
 import { COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE } from '../../config';
+import { useEffect, useState } from 'react';
 
 
 type SliderSimilarProps = {
@@ -14,11 +15,18 @@ type SliderSimilarProps = {
 
 
 function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.Element {
+  const [subarray, setSubArray] = useState<Product[][] | null>(null);
 
-  const subarray = [];
-  for (let i = 0; i < Math.ceil(products.length / COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE); i++){
-    subarray[i] = products.slice((i * COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE), (i * COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE) + COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE);
-  }
+  useEffect(() => {
+    const newSubarray = [];
+
+    for (let i = 0; i < Math.ceil(products.length / COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE); i++){
+      newSubarray[i] = products.slice((i * COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE), (i * COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE) + COUNT_OF_SIMILAR_PRODUCTS_ON_PAGE);
+    }
+
+    setSubArray(newSubarray);
+
+  }, [products]);
 
 
   return (
@@ -31,7 +39,7 @@ function SliderSimilar({products, onAddButtonClick}: SliderSimilarProps): JSX.El
       }}
     >
       {
-        subarray.map((page) => (
+        subarray?.map((page) => (
           <SwiperSlide key={page[0].id}>
             <div className="product-similar__slider-list">
               {

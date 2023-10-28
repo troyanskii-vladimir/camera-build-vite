@@ -6,6 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { State } from '../types/state';
 import { createAPI } from '../services/api';
 import { Action } from 'redux';
+import { ReducerNames } from '../config';
 
 
 export type AppThunkDispatch = ThunkDispatch<State, ReturnType<typeof createAPI>, Action>;
@@ -56,15 +57,19 @@ export const makeFakeComment = (): Comment => ({
   rating: datatype.number(5),
 } as Comment);
 
-export const makeFakeStore = (initialState?: Partial<State>): State => ({
-  products: [],
-  promoProducts: [],
-  isProductsLoading: true,
-  productData: {} as Product,
-  similarProducts: [],
-  productReviews: [],
-  newCommentPending: false,
-  ...initialState ?? {}
+export const makeFakeStore = (initialState?: Partial<State>)=> ({
+  [ReducerNames.ProductData]: {
+    products: [],
+    promoProducts: [],
+    isProductsLoading: true,
+    productData: {} as Product,
+    similarProducts: [],
+  },
+  [ReducerNames.ReviewsData]: {
+    productReviews: [],
+    newCommentPending: false,
+  },
+  ...initialState ?? {},
 });
 
 export const extractActionsTypes = (actions: Action<string>[]) => actions.map(({ type }) => type);
