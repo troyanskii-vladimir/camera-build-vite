@@ -57,7 +57,11 @@ function CatalogCardItem({product, onAddButtonClick}: CatalogCardItemProps): JSX
         <button
           className="btn btn--purple product-card__btn"
           type="button"
-          onClick={handleAddButtonClick}
+          onClick={(evt) => {
+            evt.preventDefault();
+            evt.stopPropagation();
+            handleAddButtonClick();
+          }}
         >
           Купить
         </button>
