@@ -14,8 +14,9 @@
   border-radius: 50%;
   cursor: pointer;
   margin-left: 10px;
+  color: #F4F4FC;
 }
 
 .swiperActiveBullet {
-  background-color: #888;
+  background-color: #7575E2;
 }

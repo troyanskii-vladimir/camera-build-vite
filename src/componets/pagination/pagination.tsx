@@ -41,7 +41,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
               className="pagination__link pagination__link--text"
               to={`${AppRoute.Catalog}?page=${pages[0] - 1}`}
               onClick={() => {
-                onNumberButtonClick(pages[0] - 1);
+                onNumberButtonClick(currentPage - 1);
               }}
             >
               Назад
@@ -70,7 +70,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
               className="pagination__link pagination__link--text"
               to={`${AppRoute.Catalog}?page=${pages[2] + 1}`}
               onClick={() => {
-                onNumberButtonClick(pages[2] + 1);
+                onNumberButtonClick(currentPage + 1);
               }}
             >
               Далее

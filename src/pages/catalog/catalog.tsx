@@ -42,10 +42,12 @@ function MainPage(): JSX.Element {
   };
 
   const handleAddButtonClick = (product: Product): void => {
+    document.body.classList.add('scroll-lock');
     setModalData(product);
   };
 
   const handleCloseButtonClick = (): void => {
+    document.body.classList.remove('scroll-lock');
     setModalData(null);
   };
 

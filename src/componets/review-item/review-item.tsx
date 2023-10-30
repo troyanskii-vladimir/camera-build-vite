@@ -1,5 +1,7 @@
 import { Review } from '../../types/review';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ru';
+dayjs.locale('ru');
 
 
 type ReviewItemProps = {
@@ -14,7 +16,7 @@ function ReviewItem({review} : ReviewItemProps): JSX.Element {
       <div className="review-card__head">
         <p className="title title--h4">{review.userName}</p>
         <time className="review-card__data" dateTime={dayjs(review.createAt).format('YYYY-MM-DD')}>
-          {dayjs(review.createAt).format('MMMM DD')}
+          {dayjs(review.createAt).format('DD MMMM')}
         </time>
       </div>
       <div className="rate review-card__rate">

@@ -27,6 +27,6 @@ export const ReviewsData = createReducer(initialState, (builder) => {
       state.newCommentPending = action.payload;
     })
     .addCase(createNewComment, (state, action) => {
-      state.productReviews.push(action.payload);
+      state.productReviews.unshift(action.payload);
     });
 });
