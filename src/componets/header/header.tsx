@@ -1,8 +1,44 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../config';
+import { useAppSelector } from '../../hooks';
+import { getProductData, getProducts } from '../../store/product-data/selectors';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Product } from '../../types/product';
+
+
+type SearchHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 
 function Header(): JSX.Element {
+  const products = useAppSelector(getProducts);
+  const productId = useAppSelector(getProductData).id;
+
+  const [resultProducts, setResultProducts] = useState<Product[] | null>(null);
+  const [inpuValue, setInputValue] = useState('');
+
+  useEffect(() => {
+    setInputValue('');
+    setResultProducts(null);
+  }, [productId]);
+
+  const onInputChange = ({ target }: SearchHandler) => {
+    setInputValue(target.value);
+    if (target.value === '') {
+      setResultProducts(null);
+      return;
+    }
+    const findedProducts = products.filter((product) => product.name.toLocaleLowerCase().includes(target.value.toLowerCase()));
+
+    setResultProducts(findedProducts);
+  };
+
+  const onClearButtonClick = () => {
+    setResultProducts(null);
+    setInputValue('');
+  };
+
+  const isListVisible = resultProducts?.find((item) => item.name.length > 2) && inpuValue.length > 2 || false;
+
   return (
     <header className="header" id="header">
       <div className="container">
@@ -39,7 +75,7 @@ function Header(): JSX.Element {
             </li>
           </ul>
         </nav>
-        <div className="form-search">
+        <div className={`form-search ${isListVisible ? 'list-opened' : ''}`}>
           <form>
             <label>
               <svg
@@ -55,27 +91,23 @@ function Header(): JSX.Element {
                 type="text"
                 autoComplete="off"
                 placeholder="Поиск по сайту"
+                onChange={onInputChange}
+                value={inpuValue}
               />
             </label>
-            <ul className="form-search__select-list">
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 8i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 7i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 6i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 5i
-              </li>
-              <li className="form-search__select-item" tabIndex={0}>
-                Cannonball Pro MX 4i
-              </li>
+            <ul className='form-search__select-list'>
+              {
+                resultProducts?.map((product) => (
+                  <Link key={product.id} to={`${AppRoute.Product}/${product.id}`}>
+                    <li className="form-search__select-item">
+                      {product.name}
+                    </li>
+                  </Link>
+                ))
+              }
             </ul>
           </form>
-          <button className="form-search__reset" type="reset">
+          <button className="form-search__reset" type="reset" onClick={onClearButtonClick}>
             <svg width={10} height={10} aria-hidden="true">
               <use xlinkHref="#icon-close" />
             </svg>
