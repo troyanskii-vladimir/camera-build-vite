@@ -1,5 +1,5 @@
 import CatalogCardsList from '../../componets/catalog-cards-list/catalog-cards-list';
-import CatalogSidebar from '../../componets/catalog-sidebar/catalog-sidebar';
+import CatalogSidebar, { Filter } from '../../componets/catalog-sidebar/catalog-sidebar';
 import CatalogSort from '../../componets/catalog-sort/catalog-sort';
 import Footer from '../../componets/footer/footer';
 import Header from '../../componets/header/header';
@@ -11,7 +11,7 @@ import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import { DISPLAYED_PRODUCTS } from '../../config';
 import { getProducts, getProductsLoadingStatus, getPromoProducts } from '../../store/product-data/selectors';
-import { SortOrder, SortType } from '../../types/sort';
+import { FilterCamera, FilterLevel, FilterType, SortOrder, SortType } from '../../types/sort';
 import browserHistory from '../../browser-history';
 import { useSearchParams } from 'react-router-dom';
 
@@ -28,14 +28,21 @@ function MainPage(): JSX.Element {
   const page = searchParams.get('page') || '1';
   const orderBy = searchParams.get('orderBy') as SortType || SortType.Unsort;
   const orderDirection = searchParams.get('orderDirection') as SortOrder || SortOrder.Unsort;
+  const typeProduct = searchParams.get('typeProduct') as FilterCamera || FilterCamera.Any;
+  const typeCamera = searchParams.get('typeCamera') as FilterType || FilterType.Any;
+  const typeLevel = searchParams.get('typeLevel') as FilterLevel || FilterType.Any;
 
   const [modalData, setModalData] = useState<Product | null>(null);
 
-  const [sortedProducts, setSortedProducts] = useState<Product[]>(products);
+  const [filterdProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [sortedProducts, setSortedProducts] = useState<Product[]>(filterdProducts);
   const [currentProducts, setCurrentProducts] = useState<Product[]>(sortedProducts);
   const [currentPage, setCurrentPage] = useState(Number(page));
   const [currentSortType, setCurrentSortType] = useState<SortType>(orderBy);
   const [currentSortDirection, setCurrentSortDirection] = useState<SortOrder>(orderDirection);
+  const [currentFilterProduct, setCurrentFilterProduct] = useState<FilterCamera>(typeProduct);
+  const [currentFilterCamera, setCurrentFilterCamera] = useState<FilterType>(typeCamera);
+  const [currentFilterLevel, setCurrentFilterLevel] = useState<FilterLevel>(typeLevel);
 
 
   function sortPointsByRatingToTop (a: Product, b: Product): number {
@@ -62,12 +69,20 @@ function MainPage(): JSX.Element {
       setCurrentPage(Number(page));
       setCurrentSortType(orderBy);
       setCurrentSortDirection(orderDirection);
+      setCurrentFilterProduct(typeProduct);
+      setCurrentFilterCamera(typeCamera);
+      setCurrentFilterLevel(typeLevel);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
-    setSortedProducts([...products]);
+    setFilteredProducts(products);
+
+  }, [products]);
+
+  useEffect(() => {
+    setSortedProducts([...filterdProducts]);
 
     if (currentSortType === SortType.Price && currentSortDirection === SortOrder.ToTop) {
       setSortedProducts([...products].sort(sortPointsByPriceToTop));
@@ -84,7 +99,7 @@ function MainPage(): JSX.Element {
     if (currentSortType === SortType.Rating && currentSortDirection === SortOrder.ToLow) {
       setSortedProducts([...products].sort(sortPointsByRatingToLow));
     }
-  }, [currentSortDirection, currentSortType, products]);
+  }, [currentSortDirection, currentSortType, filterdProducts, products]);
 
   useEffect(() => {
     const needToUpdatePage = currentPage !== Number(page) || sortedProducts[DISPLAYED_PRODUCTS * (currentPage - 1)];
@@ -95,6 +110,19 @@ function MainPage(): JSX.Element {
 
   }, [currentPage, page, sortedProducts, products, currentSortType]);
 
+
+  const handleFilterSubmit = (filter: Filter) => {
+    searchParams.delete('typeProduct');
+    searchParams.delete('typeCamera');
+    searchParams.delete('typeLevel');
+    searchParams.append('typeProduct', filter.camera);
+    searchParams.append('typeCamera', filter.type);
+    searchParams.append('typeLevel', filter.level);
+    setCurrentFilterProduct(filter.camera);
+    setCurrentFilterCamera(filter.type);
+    setCurrentFilterLevel(filter.level);
+    browserHistory.replace(`?${searchParams.toString()}`);
+  };
 
   const handleChangeSortTypeClick = (sortType: SortType): void => {
     searchParams.delete('orderBy');
@@ -162,7 +190,12 @@ function MainPage(): JSX.Element {
             <div className="container">
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
               <div className="page-content__columns">
-                <CatalogSidebar />
+                <CatalogSidebar
+                  typeProduct={currentFilterProduct}
+                  typeCamera={currentFilterCamera}
+                  typeLevel={currentFilterLevel}
+                  onFilterSubmit={handleFilterSubmit}
+                />
                 <div className="catalog__content">
                   <CatalogSort
                     orderBy={currentSortType}

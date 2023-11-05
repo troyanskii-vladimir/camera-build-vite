@@ -1,4 +1,41 @@
-function CatalogSidebar(): JSX.Element {
+import { ChangeEvent, useState } from 'react';
+import { FilterCamera, FilterLevel, FilterType } from '../../types/sort';
+
+type CatalogSidebarProps = {
+  typeProduct: FilterCamera;
+  typeCamera: FilterType;
+  typeLevel: FilterLevel;
+  onFilterSubmit: (filter: Filter) => void;
+}
+
+type FilterHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+
+export type Filter = {
+  camera: FilterCamera;
+  type: FilterType;
+  level: FilterLevel;
+}
+
+
+function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: CatalogSidebarProps): JSX.Element {
+  const [filter, setFilter] = useState<Filter>({
+    camera: typeProduct,
+    type: typeCamera,
+    level: typeLevel,
+  });
+
+  const handleFilterChange = ({ target }: FilterHandler) => {
+    onFilterSubmit({
+      ...filter,
+      [target.name]: target.value,
+    });
+
+    setFilter({
+      ...filter,
+      [target.name]: target.value,
+    });
+  };
+
   return (
     <div className="catalog__aside">
       <div className="catalog-filter">
@@ -29,7 +66,11 @@ function CatalogSidebar(): JSX.Element {
               <label>
                 <input
                   type="checkbox"
-                  name="photocamera"
+                  // name="photocamera"
+                  name="camera"
+                  value={FilterCamera.Photo}
+                  checked={typeProduct === FilterCamera.Photo}
+                  onChange={handleFilterChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -39,7 +80,14 @@ function CatalogSidebar(): JSX.Element {
             </div>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="videocamera" />
+                <input
+                  type="checkbox"
+                  // name="videocamera"
+                  name="camera"
+                  value={FilterCamera.Video}
+                  checked={typeProduct === FilterCamera.Video}
+                  onChange={handleFilterChange}
+                />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
                   Видеокамера
@@ -53,7 +101,11 @@ function CatalogSidebar(): JSX.Element {
               <label>
                 <input
                   type="checkbox"
-                  name="digital"
+                  // name="digital"
+                  name="type"
+                  value={FilterType.Digital}
+                  checked={typeCamera === FilterType.Digital}
+                  onChange={handleFilterChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">Цифровая</span>
@@ -61,7 +113,14 @@ function CatalogSidebar(): JSX.Element {
             </div>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="film" />
+                <input
+                  type="checkbox"
+                  // name="film"
+                  name="type"
+                  value={FilterType.Film}
+                  checked={typeCamera === FilterType.Film}
+                  onChange={handleFilterChange}
+                />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
                   Плёночная
@@ -70,7 +129,14 @@ function CatalogSidebar(): JSX.Element {
             </div>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="snapshot" />
+                <input
+                  type="checkbox"
+                  // name="snapshot"
+                  name="type"
+                  value={FilterType.Snapshot}
+                  checked={typeCamera === FilterType.Snapshot}
+                  onChange={handleFilterChange}
+                />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
                   Моментальная
@@ -81,7 +147,11 @@ function CatalogSidebar(): JSX.Element {
               <label>
                 <input
                   type="checkbox"
-                  name="collection"
+                  // name="collection"
+                  name="type"
+                  value={FilterType.Collection}
+                  checked={typeCamera === FilterType.Collection}
+                  onChange={handleFilterChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -94,14 +164,28 @@ function CatalogSidebar(): JSX.Element {
             <legend className="title title--h5">Уровень</legend>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="zero" />
+                <input
+                  type="checkbox"
+                  // name="zero"
+                  name="level"
+                  value={FilterLevel.Nullable}
+                  checked={typeLevel === FilterLevel.Nullable}
+                  onChange={handleFilterChange}
+                />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">Нулевой</span>
               </label>
             </div>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="non-professional" />
+                <input
+                  type="checkbox"
+                  // name="non-professional"
+                  name="level"
+                  value={FilterLevel.Amateur}
+                  checked={typeLevel === FilterLevel.Amateur}
+                  onChange={handleFilterChange}
+                />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
                   Любительский
@@ -110,7 +194,14 @@ function CatalogSidebar(): JSX.Element {
             </div>
             <div className="custom-checkbox catalog-filter__item">
               <label>
-                <input type="checkbox" name="professional" />
+                <input
+                  type="checkbox"
+                  // name="professional"
+                  name="level"
+                  value={FilterLevel.Professional}
+                  checked={typeLevel === FilterLevel.Professional}
+                  onChange={handleFilterChange}
+                />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
                   Профессиональный
