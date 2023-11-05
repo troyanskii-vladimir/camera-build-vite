@@ -1,84 +1,15 @@
-import { useEffect, useState } from 'react';
-import browserHistory from '../../browser-history';
-import { AppRoute } from '../../config';
-import { useLocation } from 'react-router-dom';
-
-enum SortType {
-  Price = 'price',
-  Marks = 'marks',
-}
-
-enum SortOrder {
-  ToTop = 'totop',
-  ToLow = 'tolow',
-}
-
-function CatalogSort(): JSX.Element {
-  const [sortParams, setSortParams] = useState({
-    type: SortType.Price,
-    order: SortOrder.ToTop,
-  });
-
-  const location = useLocation();
-  const extraUrl = location.search;
-
-  const [extraUrlWithoutSort, setExtraUrlWithoutSort] = useState(extraUrl);
-
-  useEffect(() => {
-    setSortParams({
-      type: SortType.Price,
-      order: SortOrder.ToTop,
-    });
-
-    if (extraUrl.match(/sort/i)) {
-      const sortNumberElement = Number(extraUrl.match(/sort/i)?.index) + 5;
-
-      const sortType = extraUrl.slice(sortNumberElement, sortNumberElement + 5) as SortType;
-      const sortOrder = extraUrl.slice(sortNumberElement + 5, sortNumberElement + 10) as SortOrder;
-
-      setExtraUrlWithoutSort(extraUrl.replace(sortType, '').replace(sortOrder, '').replace('?sort=', ''));
-
-      setSortParams({
-        type: sortType,
-        order: sortOrder,
-      });
-    }
-
-  }, [extraUrl]);
+import { SortOrder, SortType } from '../../types/sort';
 
 
-  const onSetPriceButtonClick = () => {
-    setSortParams({
-      type: SortType.Price,
-      order: sortParams.order,
-    });
-    browserHistory.push(`${AppRoute.Catalog}?sort=${SortType.Price}${sortParams.order}${extraUrlWithoutSort}`);
-  };
+type CatalogSortProps = {
+  orderBy: SortType;
+  orderDirection: SortOrder;
+  onChangeSortTypeCLick: (sortType: SortType) => void;
+  onChangeSortOrderCLick: (sortOrder: SortOrder) => void;
+};
 
-  const onSetMarksButtonClick = () => {
-    setSortParams({
-      type: SortType.Marks,
-      order: sortParams.order,
-    });
-    browserHistory.push(`${AppRoute.Catalog}?sort=${SortType.Marks}${sortParams.order}${extraUrlWithoutSort}`);
-  };
 
-  const onSetToTopButtonClick = () => {
-    setSortParams({
-      type: sortParams.type,
-      order: SortOrder.ToTop,
-    });
-    browserHistory.push(`${AppRoute.Catalog}?sort=${sortParams.type}${SortOrder.ToTop}${extraUrlWithoutSort}`);
-  };
-
-  const onSetToLowButtonClick = () => {
-    setSortParams({
-      type: sortParams.type,
-      order: SortOrder.ToLow,
-    });
-    browserHistory.push(`${AppRoute.Catalog}?sort=${sortParams.type}${SortOrder.ToLow}${extraUrlWithoutSort}`);
-  };
-
+function CatalogSort({orderBy, orderDirection, onChangeSortTypeCLick, onChangeSortOrderCLick}: CatalogSortProps): JSX.Element {
 
   return (
     <div className="catalog-sort">
@@ -91,8 +22,10 @@ function CatalogSort(): JSX.Element {
                 type="radio"
                 id="sortPrice"
                 name="sort"
-                checked={sortParams.type === SortType.Price}
-                onChange={onSetPriceButtonClick}
+                checked={orderBy === SortType.Price}
+                onChange={() => {
+                  onChangeSortTypeCLick(SortType.Price);
+                }}
               />
               <label htmlFor="sortPrice">по цене</label>
             </div>
@@ -101,8 +34,10 @@ function CatalogSort(): JSX.Element {
                 type="radio"
                 id="sortPopular"
                 name="sort"
-                checked={sortParams.type === SortType.Marks}
-                onChange={onSetMarksButtonClick}
+                checked={orderBy === SortType.Rating}
+                onChange={() => {
+                  onChangeSortTypeCLick(SortType.Rating);
+                }}
               />
               <label htmlFor="sortPopular">по популярности</label>
             </div>
@@ -113,9 +48,11 @@ function CatalogSort(): JSX.Element {
                 type="radio"
                 id="up"
                 name="sort-icon"
-                checked={sortParams.order === SortOrder.ToTop}
+                checked={orderDirection === SortOrder.ToTop}
                 aria-label="По возрастанию"
-                onChange={onSetToTopButtonClick}
+                onChange={() => {
+                  onChangeSortOrderCLick(SortOrder.ToTop);
+                }}
               />
               <label htmlFor="up">
                 <svg width={16} height={14} aria-hidden="true">
@@ -129,8 +66,10 @@ function CatalogSort(): JSX.Element {
                 id="down"
                 name="sort-icon"
                 aria-label="По убыванию"
-                checked={sortParams.order === SortOrder.ToLow}
-                onChange={onSetToLowButtonClick}
+                checked={orderDirection === SortOrder.ToLow}
+                onChange={() => {
+                  onChangeSortOrderCLick(SortOrder.ToLow);
+                }}
               />
               <label htmlFor="down">
                 <svg width={16} height={14} aria-hidden="true">

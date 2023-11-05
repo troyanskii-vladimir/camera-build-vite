@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { AppRoute } from '../../config';
+import { Link, useSearchParams } from 'react-router-dom';
 import { COUNT_OF_NUMBERS_PAGINATION } from '../../config';
 
 
@@ -10,6 +9,10 @@ type PaginationProps = {
 }
 
 function Pagination({currentPage, countOfPages, onNumberButtonClick}: PaginationProps): JSX.Element {
+
+  const [searchParams] = useSearchParams();
+  searchParams.delete('page');
+
 
   const pageNumbers = (page: number): number[] => {
     const result: number[] = [];
@@ -31,6 +34,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
   const isPreviousButtonActive = currentPage >= 4;
   const isNextButtonActive = countOfPages - currentPage > 1;
 
+
   return (
     <div className="pagination">
       <ul className="pagination__list">
@@ -39,7 +43,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
           <li className="pagination__item">
             <Link
               className="pagination__link pagination__link--text"
-              to={`${AppRoute.Catalog}?page=${pages[0] - 1}`}
+              to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${pages[0] - 1}`}
               onClick={() => {
                 onNumberButtonClick(currentPage - 1);
               }}
@@ -53,7 +57,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
             <li className="pagination__item" key={page}>
               <Link
                 className={`pagination__link ${page === currentPage ? 'pagination__link--active' : ''}`}
-                to={`${AppRoute.Catalog}?page=${page}`}
+                to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${page}`}
                 onClick={() => {
                   onNumberButtonClick(page);
                 }}
@@ -68,7 +72,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
           <li className="pagination__item">
             <Link
               className="pagination__link pagination__link--text"
-              to={`${AppRoute.Catalog}?page=${pages[2] + 1}`}
+              to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${pages[2] + 1}`}
               onClick={() => {
                 onNumberButtonClick(currentPage + 1);
               }}

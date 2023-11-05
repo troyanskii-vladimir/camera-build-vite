@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import CatalogCardsList from '../../componets/catalog-cards-list/catalog-cards-list';
 import CatalogSidebar from '../../componets/catalog-sidebar/catalog-sidebar';
 import CatalogSort from '../../componets/catalog-sort/catalog-sort';
@@ -12,6 +11,9 @@ import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import { DISPLAYED_PRODUCTS } from '../../config';
 import { getProducts, getProductsLoadingStatus, getPromoProducts } from '../../store/product-data/selectors';
+import { SortOrder, SortType } from '../../types/sort';
+import browserHistory from '../../browser-history';
+import { useSearchParams } from 'react-router-dom';
 
 
 function MainPage(): JSX.Element {
@@ -19,22 +21,102 @@ function MainPage(): JSX.Element {
   const promoProducts = useAppSelector(getPromoProducts);
   const isProductsLoading = useAppSelector(getProductsLoadingStatus);
 
-  const location = useLocation();
-  const page = location.search.at(-1) || '1';
+
+  const [searchParams] = useSearchParams();
+
+
+  const page = searchParams.get('page') || '1';
+  const orderBy = searchParams.get('orderBy') as SortType || SortType.Unsort;
+  const orderDirection = searchParams.get('orderDirection') as SortOrder || SortOrder.Unsort;
 
   const [modalData, setModalData] = useState<Product | null>(null);
 
-  const [currentProducts, setCurrentProducts] = useState<Product[]>(products);
+  const [sortedProducts, setSortedProducts] = useState<Product[]>(products);
+  const [currentProducts, setCurrentProducts] = useState<Product[]>(sortedProducts);
   const [currentPage, setCurrentPage] = useState(Number(page));
+  const [currentSortType, setCurrentSortType] = useState<SortType>(orderBy);
+  const [currentSortDirection, setCurrentSortDirection] = useState<SortOrder>(orderDirection);
+
+
+  function sortPointsByRatingToTop (a: Product, b: Product): number {
+    return a.rating > b.rating ? 1 : -1;
+  }
+
+  function sortPointsByRatingToLow (a: Product, b: Product): number {
+    return a.rating < b.rating ? 1 : -1;
+  }
+
+  function sortPointsByPriceToTop (a: Product, b: Product): number {
+    return a.price > b.price ? 1 : -1;
+  }
+
+  function sortPointsByPriceToLow (a: Product, b: Product): number {
+    return a.price < b.price ? 1 : -1;
+  }
+
 
   useEffect(() => {
-    const needToUpdate = currentPage !== Number(page) || products[DISPLAYED_PRODUCTS * (currentPage - 1)];
+    if (searchParams.toString().length < 1) {
+      setSortedProducts(products);
+      setCurrentProducts(sortedProducts);
+      setCurrentPage(Number(page));
+      setCurrentSortType(orderBy);
+      setCurrentSortDirection(orderDirection);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
-    if (needToUpdate) {
-      setCurrentProducts(products.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
+  useEffect(() => {
+    setSortedProducts([...products]);
+
+    if (currentSortType === SortType.Price && currentSortDirection === SortOrder.ToTop) {
+      setSortedProducts([...products].sort(sortPointsByPriceToTop));
     }
 
-  }, [currentPage, page, products]);
+    if (currentSortType === SortType.Price && currentSortDirection === SortOrder.ToLow) {
+      setSortedProducts([...products].sort(sortPointsByPriceToLow));
+    }
+
+    if (currentSortType === SortType.Rating && currentSortDirection === SortOrder.ToTop) {
+      setSortedProducts([...products].sort(sortPointsByRatingToTop));
+    }
+
+    if (currentSortType === SortType.Rating && currentSortDirection === SortOrder.ToLow) {
+      setSortedProducts([...products].sort(sortPointsByRatingToLow));
+    }
+  }, [currentSortDirection, currentSortType, products]);
+
+  useEffect(() => {
+    const needToUpdatePage = currentPage !== Number(page) || sortedProducts[DISPLAYED_PRODUCTS * (currentPage - 1)];
+
+    if (needToUpdatePage) {
+      setCurrentProducts(sortedProducts.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
+    }
+
+  }, [currentPage, page, sortedProducts, products, currentSortType]);
+
+
+  const handleChangeSortTypeClick = (sortType: SortType): void => {
+    searchParams.delete('orderBy');
+    searchParams.append('orderBy', sortType);
+    setCurrentSortType(sortType);
+    if (currentSortDirection === SortOrder.Unsort) {
+      setCurrentSortDirection(SortOrder.ToTop);
+      searchParams.append('orderDirection', SortOrder.ToTop);
+    }
+    browserHistory.replace(`?${searchParams.toString()}`);
+  };
+
+  const handleChangeSortOrderClick = (sortOrder: SortOrder): void => {
+    searchParams.delete('orderDirection');
+    searchParams.append('orderDirection', sortOrder);
+    setCurrentSortDirection(sortOrder);
+    if (currentSortType === SortType.Unsort) {
+      setCurrentSortType(SortType.Price);
+      searchParams.append('orderBy', SortType.Price);
+    }
+    browserHistory.replace(`?${searchParams.toString()}`);
+  };
 
   const handleNumberButtonClick = (num: number): void => {
     setCurrentProducts([]);
@@ -82,10 +164,15 @@ function MainPage(): JSX.Element {
               <div className="page-content__columns">
                 <CatalogSidebar />
                 <div className="catalog__content">
-                  <CatalogSort />
+                  <CatalogSort
+                    orderBy={currentSortType}
+                    orderDirection={currentSortDirection}
+                    onChangeSortTypeCLick={handleChangeSortTypeClick}
+                    onChangeSortOrderCLick={handleChangeSortOrderClick}
+                  />
                   {
                     !isProductsLoading &&
-                    <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick}/>
+                    <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick} />
                   }
                   {
                     Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
