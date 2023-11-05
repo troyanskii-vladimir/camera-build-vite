@@ -54,7 +54,7 @@ function MainPage(): JSX.Element {
     return a.price < b.price ? 1 : -1;
   }
 
-
+  //Для случая если пользователь жмет кнопку каталог, находясь на странице каталога (все должно сброситься)
   useEffect(() => {
     if (searchParams.toString().length < 1) {
       setSortedProducts(products);
