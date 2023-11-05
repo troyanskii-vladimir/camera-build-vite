@@ -83,7 +83,39 @@ function MainPage(): JSX.Element {
       setFilteredProducts([...products].filter((product) => product.category === 'Фотоаппарат'));
     }
 
-  }, [currentFilterProduct, products]);
+    if (currentFilterProduct === FilterCamera.Video) {
+      setFilteredProducts([...products].filter((product) => product.category === 'Видеокамера'));
+    }
+
+    if (currentFilterCamera === FilterType.Digital) {
+      setFilteredProducts([...products].filter((product) => product.type === 'Цифровая'));
+    }
+
+    if (currentFilterCamera === FilterType.Film) {
+      setFilteredProducts([...products].filter((product) => product.type === 'Коллекционная'));
+    }
+
+    if (currentFilterCamera === FilterType.Snapshot) {
+      setFilteredProducts([...products].filter((product) => product.type === 'Моментальная'));
+    }
+
+    if (currentFilterCamera === FilterType.Collection) {
+      setFilteredProducts([...products].filter((product) => product.type === 'Плёночная'));
+    }
+
+    if (currentFilterLevel === FilterLevel.Nullable) {
+      setFilteredProducts([...products].filter((product) => product.level === 'Нулевой'));
+    }
+
+    if (currentFilterLevel === FilterLevel.Amateur) {
+      setFilteredProducts([...products].filter((product) => product.level === 'Любительский'));
+    }
+
+    if (currentFilterLevel === FilterLevel.Professional) {
+      setFilteredProducts([...products].filter((product) => product.level === 'Прфофессиональный'));
+    }
+
+  }, [currentFilterCamera, currentFilterLevel, currentFilterProduct, products]);
 
   useEffect(() => {
     setSortedProducts([...filterdProducts]);
