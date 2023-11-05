@@ -31,8 +31,8 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
 
   const pages = pageNumbers(currentPage);
 
-  const isPreviousButtonActive = currentPage >= 4;
-  const isNextButtonActive = countOfPages - currentPage > 1;
+  const isPreviousButtonActive = currentPage !== 1;
+  const isNextButtonActive = countOfPages - currentPage >= 1;
 
 
   return (
@@ -43,7 +43,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
           <li className="pagination__item">
             <Link
               className="pagination__link pagination__link--text"
-              to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${pages[0] - 1}`}
+              to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${currentPage - 1}`}
               onClick={() => {
                 onNumberButtonClick(currentPage - 1);
               }}
@@ -72,7 +72,7 @@ function Pagination({currentPage, countOfPages, onNumberButtonClick}: Pagination
           <li className="pagination__item">
             <Link
               className="pagination__link pagination__link--text"
-              to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${pages[2] + 1}`}
+              to={`?${searchParams.toString()}${searchParams.toString().length ? '&' : ''}page=${currentPage + 1}`}
               onClick={() => {
                 onNumberButtonClick(currentPage + 1);
               }}

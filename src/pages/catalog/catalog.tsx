@@ -79,25 +79,29 @@ function MainPage(): JSX.Element {
   useEffect(() => {
     setFilteredProducts(products);
 
-  }, [products]);
+    if (currentFilterProduct === FilterCamera.Photo) {
+      setFilteredProducts([...products].filter((product) => product.category === 'Фотоаппарат'));
+    }
+
+  }, [currentFilterProduct, products]);
 
   useEffect(() => {
     setSortedProducts([...filterdProducts]);
 
     if (currentSortType === SortType.Price && currentSortDirection === SortOrder.ToTop) {
-      setSortedProducts([...products].sort(sortPointsByPriceToTop));
+      setSortedProducts([...filterdProducts].sort(sortPointsByPriceToTop));
     }
 
     if (currentSortType === SortType.Price && currentSortDirection === SortOrder.ToLow) {
-      setSortedProducts([...products].sort(sortPointsByPriceToLow));
+      setSortedProducts([...filterdProducts].sort(sortPointsByPriceToLow));
     }
 
     if (currentSortType === SortType.Rating && currentSortDirection === SortOrder.ToTop) {
-      setSortedProducts([...products].sort(sortPointsByRatingToTop));
+      setSortedProducts([...filterdProducts].sort(sortPointsByRatingToTop));
     }
 
     if (currentSortType === SortType.Rating && currentSortDirection === SortOrder.ToLow) {
-      setSortedProducts([...products].sort(sortPointsByRatingToLow));
+      setSortedProducts([...filterdProducts].sort(sortPointsByRatingToLow));
     }
   }, [currentSortDirection, currentSortType, filterdProducts, products]);
 
@@ -211,7 +215,7 @@ function MainPage(): JSX.Element {
                     Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
                     <Pagination
                       currentPage={currentPage}
-                      countOfPages={Math.ceil(products.length / DISPLAYED_PRODUCTS)}
+                      countOfPages={Math.ceil(filterdProducts.length / DISPLAYED_PRODUCTS)}
                       onNumberButtonClick={handleNumberButtonClick}
                     />
                   }
