@@ -143,11 +143,7 @@ function MainPage(): JSX.Element {
 
 
   useEffect(() => {
-    const needToUpdatePage = currentPage !== Number(page) || sortedProducts[DISPLAYED_PRODUCTS * (currentPage - 1)];
-
-    if (needToUpdatePage) {
-      setCurrentProducts(sortedProducts.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
-    }
+    setCurrentProducts(sortedProducts.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
 
   }, [currentPage, page, sortedProducts, currentSortType]);
 

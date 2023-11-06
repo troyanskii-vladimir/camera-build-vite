@@ -9,6 +9,10 @@ type CatalogCardsListProps = {
 
 function CatalogCardsList({products, onAddButtonClick}: CatalogCardsListProps): JSX.Element {
 
+  if (products.length === 0) {
+    return (<h3 className='product-card__info'>По вашему запросу ничего не найдено</h3>);
+  }
+
   return (
     <div className="cards catalog__cards">
       {
