@@ -64,7 +64,8 @@ function MainPage(): JSX.Element {
   //Для случая если пользователь жмет кнопку каталог, находясь на странице каталога (все должно сброситься)
   useEffect(() => {
     if (searchParams.toString().length < 1) {
-      setSortedProducts(products);
+      setFilteredProducts(products);
+      setSortedProducts(filterdProducts);
       setCurrentProducts(sortedProducts);
       setCurrentPage(Number(page));
       setCurrentSortType(orderBy);
@@ -76,46 +77,49 @@ function MainPage(): JSX.Element {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+
   useEffect(() => {
-    setFilteredProducts(products);
+    let tempProducts: Product[] = products;
 
     if (currentFilterProduct === FilterCamera.Photo) {
-      setFilteredProducts([...products].filter((product) => product.category === 'Фотоаппарат'));
+      tempProducts = [...tempProducts].filter((product) => product.category === 'Фотоаппарат');
     }
 
     if (currentFilterProduct === FilterCamera.Video) {
-      setFilteredProducts([...products].filter((product) => product.category === 'Видеокамера'));
+      tempProducts = [...tempProducts].filter((product) => product.category === 'Видеокамера');
     }
 
     if (currentFilterCamera === FilterType.Digital) {
-      setFilteredProducts([...products].filter((product) => product.type === 'Цифровая'));
+      tempProducts = [...tempProducts].filter((product) => product.type === 'Цифровая');
     }
 
     if (currentFilterCamera === FilterType.Film) {
-      setFilteredProducts([...products].filter((product) => product.type === 'Коллекционная'));
+      tempProducts = [...tempProducts].filter((product) => product.type === 'Коллекционная');
     }
 
     if (currentFilterCamera === FilterType.Snapshot) {
-      setFilteredProducts([...products].filter((product) => product.type === 'Моментальная'));
+      tempProducts = [...tempProducts].filter((product) => product.type === 'Моментальная');
     }
 
     if (currentFilterCamera === FilterType.Collection) {
-      setFilteredProducts([...products].filter((product) => product.type === 'Плёночная'));
+      tempProducts = [...tempProducts].filter((product) => product.type === 'Плёночная');
     }
 
     if (currentFilterLevel === FilterLevel.Nullable) {
-      setFilteredProducts([...products].filter((product) => product.level === 'Нулевой'));
+      tempProducts = [...tempProducts].filter((product) => product.level === 'Нулевой');
     }
 
     if (currentFilterLevel === FilterLevel.Amateur) {
-      setFilteredProducts([...products].filter((product) => product.level === 'Любительский'));
+      tempProducts = [...tempProducts].filter((product) => product.level === 'Любительский');
     }
 
     if (currentFilterLevel === FilterLevel.Professional) {
-      setFilteredProducts([...products].filter((product) => product.level === 'Прфофессиональный'));
+      tempProducts = [...tempProducts].filter((product) => product.level === 'Профессиональный');
     }
+    setFilteredProducts(tempProducts);
 
   }, [currentFilterCamera, currentFilterLevel, currentFilterProduct, products]);
+
 
   useEffect(() => {
     setSortedProducts([...filterdProducts]);
@@ -135,7 +139,8 @@ function MainPage(): JSX.Element {
     if (currentSortType === SortType.Rating && currentSortDirection === SortOrder.ToLow) {
       setSortedProducts([...filterdProducts].sort(sortPointsByRatingToLow));
     }
-  }, [currentSortDirection, currentSortType, filterdProducts, products]);
+  }, [currentSortDirection, currentSortType, filterdProducts]);
+
 
   useEffect(() => {
     const needToUpdatePage = currentPage !== Number(page) || sortedProducts[DISPLAYED_PRODUCTS * (currentPage - 1)];
@@ -144,7 +149,7 @@ function MainPage(): JSX.Element {
       setCurrentProducts(sortedProducts.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
     }
 
-  }, [currentPage, page, sortedProducts, products, currentSortType]);
+  }, [currentPage, page, sortedProducts, currentSortType]);
 
 
   const handleFilterSubmit = (filter: Filter) => {

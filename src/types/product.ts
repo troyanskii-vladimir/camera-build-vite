@@ -2,7 +2,7 @@ export type Type = 'Коллекционная' | 'Моментальная' | '
 
 export type Category = 'Видеокамера' | 'Фотоаппарат';
 
-export type Level = 'Нулевой' | 'Любительский' | 'Прфофессиональный';
+export type Level = 'Нулевой' | 'Любительский' | 'Профессиональный';
 
 
 export type Product = {

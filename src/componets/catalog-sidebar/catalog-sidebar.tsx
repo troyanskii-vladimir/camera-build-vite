@@ -24,6 +24,20 @@ function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: Ca
     level: typeLevel,
   });
 
+  const handleFilterRefresh = () => {
+    onFilterSubmit({
+      camera: FilterCamera.Any,
+      type: FilterType.Any,
+      level: FilterLevel.Any,
+    });
+
+    setFilter({
+      camera: FilterCamera.Any,
+      type: FilterType.Any,
+      level: FilterLevel.Any,
+    });
+  };
+
   const handleFilterChange = ({ target }: FilterHandler) => {
     onFilterSubmit({
       ...filter,
@@ -212,6 +226,7 @@ function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: Ca
           <button
             className="btn catalog-filter__reset-btn"
             type="reset"
+            onClick={handleFilterRefresh}
           >
             Сбросить фильтры
           </button>
