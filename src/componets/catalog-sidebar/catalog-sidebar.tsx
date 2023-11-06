@@ -1,7 +1,12 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FilterCamera, FilterLevel, FilterType } from '../../types/sort';
 
+
 type CatalogSidebarProps = {
+  minPrice: number;
+  maxPrice: number;
+  typePrice: number;
+  typePriceUp: number;
   typeProduct: FilterCamera;
   typeCamera: FilterType;
   typeLevel: FilterLevel;
@@ -11,27 +16,46 @@ type CatalogSidebarProps = {
 type FilterHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 export type Filter = {
+  price: number;
+  priceUp: number;
   camera: FilterCamera;
   type: FilterType;
   level: FilterLevel;
 }
 
 
-function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: CatalogSidebarProps): JSX.Element {
+function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct, typeCamera, typeLevel, onFilterSubmit}: CatalogSidebarProps): JSX.Element {
   const [filter, setFilter] = useState<Filter>({
+    price: typePrice,
+    priceUp: typePriceUp,
     camera: typeProduct,
     type: typeCamera,
     level: typeLevel,
   });
 
+  useEffect(() => {
+    setFilter({
+      price: typePrice,
+      priceUp: typePriceUp,
+      camera: typeProduct,
+      type: typeCamera,
+      level: typeLevel,
+    });
+  }, [typePrice, typePriceUp, minPrice, maxPrice, typeProduct, typeCamera, typeLevel]);
+
+
   const handleFilterRefresh = () => {
     onFilterSubmit({
+      price: minPrice,
+      priceUp: maxPrice,
       camera: FilterCamera.Any,
       type: FilterType.Any,
       level: FilterLevel.Any,
     });
 
     setFilter({
+      price: minPrice,
+      priceUp: maxPrice,
       camera: FilterCamera.Any,
       type: FilterType.Any,
       level: FilterLevel.Any,
@@ -60,7 +84,13 @@ function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: Ca
             <div className="catalog-filter__price-range">
               <div className="custom-input">
                 <label>
-                  <input type="number" name="price" placeholder="от" />
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="от"
+                    value={typePrice}
+                    onChange={handleFilterChange}
+                  />
                 </label>
               </div>
               <div className="custom-input">
@@ -69,6 +99,8 @@ function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: Ca
                     type="number"
                     name="priceUp"
                     placeholder="до"
+                    value={typePriceUp}
+                    onChange={handleFilterChange}
                   />
                 </label>
               </div>
@@ -133,6 +165,7 @@ function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: Ca
                   name="type"
                   value={FilterType.Film}
                   checked={typeCamera === FilterType.Film}
+                  disabled={typeProduct === FilterCamera.Video}
                   onChange={handleFilterChange}
                 />
                 <span className="custom-checkbox__icon" />
@@ -149,6 +182,7 @@ function CatalogSidebar({typeProduct, typeCamera, typeLevel, onFilterSubmit}: Ca
                   name="type"
                   value={FilterType.Snapshot}
                   checked={typeCamera === FilterType.Snapshot}
+                  disabled={typeProduct === FilterCamera.Video}
                   onChange={handleFilterChange}
                 />
                 <span className="custom-checkbox__icon" />

@@ -16,6 +16,23 @@ import browserHistory from '../../browser-history';
 import { useSearchParams } from 'react-router-dom';
 
 
+function sortPointsByRatingToTop (a: Product, b: Product): number {
+  return a.rating > b.rating ? 1 : -1;
+}
+
+function sortPointsByRatingToLow (a: Product, b: Product): number {
+  return a.rating < b.rating ? 1 : -1;
+}
+
+function sortPointsByPriceToTop (a: Product, b: Product): number {
+  return a.price > b.price ? 1 : -1;
+}
+
+function sortPointsByPriceToLow (a: Product, b: Product): number {
+  return a.price < b.price ? 1 : -1;
+}
+
+
 function MainPage(): JSX.Element {
   const products = useAppSelector(getProducts);
   const promoProducts = useAppSelector(getPromoProducts);
@@ -28,6 +45,8 @@ function MainPage(): JSX.Element {
   const page = searchParams.get('page') || '1';
   const orderBy = searchParams.get('orderBy') as SortType || SortType.Unsort;
   const orderDirection = searchParams.get('orderDirection') as SortOrder || SortOrder.Unsort;
+  const typePrice = Number(searchParams.get('price')) || [...products].sort(sortPointsByPriceToTop)[0]?.price;
+  const typePriceUp = Number(searchParams.get('priceUp')) || [...products].sort(sortPointsByPriceToLow)[0]?.price;
   const typeProduct = searchParams.get('typeProduct') as FilterCamera || FilterCamera.Any;
   const typeCamera = searchParams.get('typeCamera') as FilterType || FilterType.Any;
   const typeLevel = searchParams.get('typeLevel') as FilterLevel || FilterType.Any;
@@ -40,28 +59,13 @@ function MainPage(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(Number(page));
   const [currentSortType, setCurrentSortType] = useState<SortType>(orderBy);
   const [currentSortDirection, setCurrentSortDirection] = useState<SortOrder>(orderDirection);
+  const [currentPrice, setCurrentPrice] = useState<number>(typePrice);
+  const [currentPriceUp, setCurrentPriceUp] = useState<number>(typePriceUp);
   const [currentFilterProduct, setCurrentFilterProduct] = useState<FilterCamera>(typeProduct);
   const [currentFilterCamera, setCurrentFilterCamera] = useState<FilterType>(typeCamera);
   const [currentFilterLevel, setCurrentFilterLevel] = useState<FilterLevel>(typeLevel);
 
-
-  function sortPointsByRatingToTop (a: Product, b: Product): number {
-    return a.rating > b.rating ? 1 : -1;
-  }
-
-  function sortPointsByRatingToLow (a: Product, b: Product): number {
-    return a.rating < b.rating ? 1 : -1;
-  }
-
-  function sortPointsByPriceToTop (a: Product, b: Product): number {
-    return a.price > b.price ? 1 : -1;
-  }
-
-  function sortPointsByPriceToLow (a: Product, b: Product): number {
-    return a.price < b.price ? 1 : -1;
-  }
-
-  //Для случая если пользователь жмет кнопку каталог, находясь на странице каталога (все должно сброситься)
+  //Для случая если пользователь жмет кнопку 'каталог', находясь на странице каталога (все должно сброситься)
   useEffect(() => {
     if (searchParams.toString().length < 1) {
       setFilteredProducts(products);
@@ -70,6 +74,8 @@ function MainPage(): JSX.Element {
       setCurrentPage(Number(page));
       setCurrentSortType(orderBy);
       setCurrentSortDirection(orderDirection);
+      setCurrentPrice(typePrice);
+      setCurrentPriceUp(typePriceUp);
       setCurrentFilterProduct(typeProduct);
       setCurrentFilterCamera(typeCamera);
       setCurrentFilterLevel(typeLevel);
@@ -79,7 +85,20 @@ function MainPage(): JSX.Element {
 
 
   useEffect(() => {
+    if (!searchParams.has('price')) {
+      setCurrentPrice([...products].sort(sortPointsByPriceToTop)[0]?.price);
+    }
+    if (!searchParams.has('priceUp')) {
+      setCurrentPriceUp([...products].sort(sortPointsByPriceToLow)[0]?.price);
+    }
+  }, [products, searchParams]);
+
+
+  useEffect(() => {
     let tempProducts: Product[] = products;
+
+    tempProducts = [...tempProducts].filter((product) => product.price >= currentPrice);
+    tempProducts = [...tempProducts].filter((product) => product.price <= currentPriceUp);
 
     if (currentFilterProduct === FilterCamera.Photo) {
       tempProducts = [...tempProducts].filter((product) => product.category === 'Фотоаппарат');
@@ -118,7 +137,7 @@ function MainPage(): JSX.Element {
     }
     setFilteredProducts(tempProducts);
 
-  }, [currentFilterCamera, currentFilterLevel, currentFilterProduct, products]);
+  }, [currentFilterCamera, currentFilterLevel, currentFilterProduct, currentPrice, currentPriceUp, products]);
 
 
   useEffect(() => {
@@ -143,18 +162,37 @@ function MainPage(): JSX.Element {
 
 
   useEffect(() => {
+    // if (sortedProducts.length === 0) {
+    //   searchParams.delete('page');
+    //   setCurrentPage(1);
+    //   browserHistory.replace(`?${searchParams.toString()}`);
+    // }
     setCurrentProducts(sortedProducts.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
 
   }, [currentPage, page, sortedProducts, currentSortType]);
 
 
-  const handleFilterSubmit = (filter: Filter) => {
+  const handleFilterChange = (filter: Filter) => {
+
+    searchParams.delete('price');
+    searchParams.append('price', String(filter.price));
+
+    searchParams.delete('priceUp');
+    searchParams.append('priceUp', String(filter.priceUp));
+
+
     searchParams.delete('typeProduct');
+    searchParams.append('typeProduct', filter.camera);
+
+
     searchParams.delete('typeCamera');
     searchParams.delete('typeLevel');
-    searchParams.append('typeProduct', filter.camera);
+
+
     searchParams.append('typeCamera', filter.type);
     searchParams.append('typeLevel', filter.level);
+    setCurrentPrice(filter.price);
+    setCurrentPriceUp(filter.priceUp);
     setCurrentFilterProduct(filter.camera);
     setCurrentFilterCamera(filter.type);
     setCurrentFilterLevel(filter.level);
@@ -228,10 +266,14 @@ function MainPage(): JSX.Element {
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
               <div className="page-content__columns">
                 <CatalogSidebar
+                  minPrice={[...products].sort(sortPointsByPriceToTop)[0]?.price}
+                  maxPrice={[...products].sort(sortPointsByPriceToLow)[0]?.price}
+                  typePrice={currentPrice}
+                  typePriceUp={currentPriceUp}
                   typeProduct={currentFilterProduct}
                   typeCamera={currentFilterCamera}
                   typeLevel={currentFilterLevel}
-                  onFilterSubmit={handleFilterSubmit}
+                  onFilterSubmit={handleFilterChange}
                 />
                 <div className="catalog__content">
                   <CatalogSort
