@@ -38,6 +38,8 @@ function MainPage(): JSX.Element {
   const promoProducts = useAppSelector(getPromoProducts);
   const isProductsLoading = useAppSelector(getProductsLoadingStatus);
 
+  const minPrice = [...products].sort(sortPointsByPriceToTop)[0]?.price;
+  const maxPrice = [...products].sort(sortPointsByPriceToLow)[0]?.price;
 
   const [searchParams] = useSearchParams();
 
@@ -45,8 +47,8 @@ function MainPage(): JSX.Element {
   const page = searchParams.get('page') || '1';
   const orderBy = searchParams.get('orderBy') as SortType || SortType.Unsort;
   const orderDirection = searchParams.get('orderDirection') as SortOrder || SortOrder.Unsort;
-  const typePrice = Number(searchParams.get('price')) || [...products].sort(sortPointsByPriceToTop)[0]?.price;
-  const typePriceUp = Number(searchParams.get('priceUp')) || [...products].sort(sortPointsByPriceToLow)[0]?.price;
+  const typePrice = Number(searchParams.get('price')) || minPrice;
+  const typePriceUp = Number(searchParams.get('priceUp')) || maxPrice;
   const typeProduct = searchParams.get('typeProduct') as FilterCamera || FilterCamera.Any;
   const typeCamera = searchParams.get('typeCamera') as FilterType || FilterType.Any;
   const typeLevel = searchParams.get('typeLevel') as FilterLevel || FilterType.Any;
@@ -64,6 +66,9 @@ function MainPage(): JSX.Element {
   const [currentFilterProduct, setCurrentFilterProduct] = useState<FilterCamera>(typeProduct);
   const [currentFilterCamera, setCurrentFilterCamera] = useState<FilterType>(typeCamera);
   const [currentFilterLevel, setCurrentFilterLevel] = useState<FilterLevel>(typeLevel);
+
+  // const [minPriceTemp, setMinPriceTemp] = useState<number>(minPrice);
+
 
   //Для случая если пользователь жмет кнопку 'каталог', находясь на странице каталога (все должно сброситься)
   useEffect(() => {
@@ -83,15 +88,24 @@ function MainPage(): JSX.Element {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  // useEffect(() => {
+  //   if (filterdProducts.length > 0) {
+  //     console.log('da');
+
+  //     setMinPriceTemp([...filterdProducts].sort(sortPointsByPriceToTop)[0].price);
+  //     setCurrentPrice(minPriceTemp);
+  //   }
+  // }, [filterdProducts]);
 
   useEffect(() => {
-    if (!searchParams.has('price')) {
-      setCurrentPrice([...products].sort(sortPointsByPriceToTop)[0]?.price);
+    if (!searchParams.has('price') && currentFilterProduct === FilterCamera.Any) {
+      setCurrentPrice(minPrice);
+      // setMinPriceTemp(minPrice);
     }
     if (!searchParams.has('priceUp')) {
-      setCurrentPriceUp([...products].sort(sortPointsByPriceToLow)[0]?.price);
+      setCurrentPriceUp(maxPrice);
     }
-  }, [products, searchParams]);
+  }, [currentFilterProduct, maxPrice, minPrice, searchParams]);
 
 
   useEffect(() => {
@@ -135,6 +149,7 @@ function MainPage(): JSX.Element {
     if (currentFilterLevel === FilterLevel.Professional) {
       tempProducts = [...tempProducts].filter((product) => product.level === 'Профессиональный');
     }
+
     setFilteredProducts(tempProducts);
 
   }, [currentFilterCamera, currentFilterLevel, currentFilterProduct, currentPrice, currentPriceUp, products]);
@@ -174,28 +189,36 @@ function MainPage(): JSX.Element {
 
   const handleFilterChange = (filter: Filter) => {
 
-    searchParams.delete('price');
-    searchParams.append('price', String(filter.price));
+    if (filter.price !== currentPrice) {
+      searchParams.delete('price');
+      searchParams.append('price', String(filter.price));
+      setCurrentPrice(filter.price);
+    }
 
-    searchParams.delete('priceUp');
-    searchParams.append('priceUp', String(filter.priceUp));
+    if (filter.priceUp !== maxPrice) {
+      searchParams.delete('priceUp');
+      searchParams.append('priceUp', String(filter.priceUp));
+      setCurrentPriceUp(filter.priceUp);
+    }
 
+    if (filter.camera !== FilterCamera.Any) {
+      searchParams.delete('typeProduct');
+      searchParams.append('typeProduct', filter.camera);
+      setCurrentFilterProduct(filter.camera);
+    }
 
-    searchParams.delete('typeProduct');
-    searchParams.append('typeProduct', filter.camera);
+    if (filter.type !== FilterType.Any) {
+      searchParams.delete('typeCamera');
+      searchParams.append('typeCamera', filter.type);
+      setCurrentFilterCamera(filter.type);
+    }
 
+    if (filter.level !== FilterLevel.Any) {
+      searchParams.delete('typeLevel');
+      searchParams.append('typeLevel', filter.level);
+      setCurrentFilterLevel(filter.level);
+    }
 
-    searchParams.delete('typeCamera');
-    searchParams.delete('typeLevel');
-
-
-    searchParams.append('typeCamera', filter.type);
-    searchParams.append('typeLevel', filter.level);
-    setCurrentPrice(filter.price);
-    setCurrentPriceUp(filter.priceUp);
-    setCurrentFilterProduct(filter.camera);
-    setCurrentFilterCamera(filter.type);
-    setCurrentFilterLevel(filter.level);
     browserHistory.replace(`?${searchParams.toString()}`);
   };
 
@@ -266,8 +289,8 @@ function MainPage(): JSX.Element {
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
               <div className="page-content__columns">
                 <CatalogSidebar
-                  minPrice={[...products].sort(sortPointsByPriceToTop)[0]?.price}
-                  maxPrice={[...products].sort(sortPointsByPriceToLow)[0]?.price}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
                   typePrice={currentPrice}
                   typePriceUp={currentPriceUp}
                   typeProduct={currentFilterProduct}

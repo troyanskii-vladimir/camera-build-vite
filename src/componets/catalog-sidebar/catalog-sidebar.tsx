@@ -112,7 +112,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="photocamera"
                   name="camera"
                   value={FilterCamera.Photo}
                   checked={typeProduct === FilterCamera.Photo}
@@ -128,7 +127,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="videocamera"
                   name="camera"
                   value={FilterCamera.Video}
                   checked={typeProduct === FilterCamera.Video}
@@ -147,7 +145,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="digital"
                   name="type"
                   value={FilterType.Digital}
                   checked={typeCamera === FilterType.Digital}
@@ -161,7 +158,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="film"
                   name="type"
                   value={FilterType.Film}
                   checked={typeCamera === FilterType.Film}
@@ -178,7 +174,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="snapshot"
                   name="type"
                   value={FilterType.Snapshot}
                   checked={typeCamera === FilterType.Snapshot}
@@ -195,7 +190,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="collection"
                   name="type"
                   value={FilterType.Collection}
                   checked={typeCamera === FilterType.Collection}
@@ -214,7 +208,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="zero"
                   name="level"
                   value={FilterLevel.Nullable}
                   checked={typeLevel === FilterLevel.Nullable}
@@ -228,7 +221,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="non-professional"
                   name="level"
                   value={FilterLevel.Amateur}
                   checked={typeLevel === FilterLevel.Amateur}
@@ -244,7 +236,6 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
               <label>
                 <input
                   type="checkbox"
-                  // name="professional"
                   name="level"
                   value={FilterLevel.Professional}
                   checked={typeLevel === FilterLevel.Professional}
