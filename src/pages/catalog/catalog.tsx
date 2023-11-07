@@ -203,10 +203,22 @@ function MainPage(): JSX.Element {
 
 
   const setCorrectPrice = (priceMin: number, priceMax: number) => {
+    if (priceMin < 0) {
+      searchParams.delete('price');
+      searchParams.append('price', String(minPriceBase));
+      setCurrentPrice(minPriceBase);
+    }
+
     if (priceMin < minPriceBase) {
       searchParams.delete('price');
       searchParams.append('price', String(minPriceBase));
       setCurrentPrice(minPriceBase);
+    }
+
+    if (priceMax < currentPrice) {
+      searchParams.delete('priceUp');
+      searchParams.append('priceUp', String(currentPrice));
+      setCurrentPriceUp(currentPrice);
     }
 
     if (priceMax > maxPriceBase) {
