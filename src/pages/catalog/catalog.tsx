@@ -38,8 +38,6 @@ function MainPage(): JSX.Element {
   const promoProducts = useAppSelector(getPromoProducts);
   const isProductsLoading = useAppSelector(getProductsLoadingStatus);
 
-  // const minPrice = [...products].sort(sortPointsByPriceToTop)[0]?.price;
-  // const maxPrice = [...products].sort(sortPointsByPriceToLow)[0]?.price;
 
   const [searchParams] = useSearchParams();
 
@@ -100,7 +98,7 @@ function MainPage(): JSX.Element {
       setMaxPriceBase([...products].sort(sortPointsByPriceToLow)[0].price);
     }
 
-    if (filterdProducts.length > 0) {   
+    if (filterdProducts.length > 0) {
       setMinPriceTemp([...filterdProducts].sort(sortPointsByPriceToTop)[0].price);
       setMaxPriceTemp([...filterdProducts].sort(sortPointsByPriceToLow)[0].price);
     }
@@ -168,6 +166,7 @@ function MainPage(): JSX.Element {
 
     setFilteredProducts(tempProducts);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFilterCamera, currentFilterLevel, currentFilterProduct, currentPrice, currentPriceUp, products]);
 
 
@@ -203,8 +202,23 @@ function MainPage(): JSX.Element {
   }, [currentPage, page, sortedProducts, currentSortType]);
 
 
+  const setCorrectPrice = (priceMin: number, priceMax: number) => {
+    if (priceMin < minPriceBase) {
+      searchParams.delete('price');
+      searchParams.append('price', String(minPriceBase));
+      setCurrentPrice(minPriceBase);
+    }
+
+    if (priceMax > maxPriceBase) {
+      searchParams.delete('priceUp');
+      searchParams.append('priceUp', String(maxPriceBase));
+      setCurrentPriceUp(maxPriceBase);
+    }
+
+    browserHistory.replace(`?${searchParams.toString()}`);
+  };
+
   const handleFilterPriceChange = (filterPrice: FilterPrice) => {
-    console.log('price')
     if (filterPrice.price !== currentPrice) {
       searchParams.delete('price');
       searchParams.append('price', String(filterPrice.price));
@@ -218,10 +232,9 @@ function MainPage(): JSX.Element {
     }
 
     browserHistory.replace(`?${searchParams.toString()}`);
-  }
+  };
 
   const handleFilterChange = (filter: Filter) => {
-    console.log('filter')
     if (filter.camera !== FilterCamera.Any) {
       searchParams.delete('typeProduct');
       searchParams.append('typeProduct', filter.camera);
@@ -244,7 +257,6 @@ function MainPage(): JSX.Element {
   };
 
   const handleFilterRefresh = () => {
-    console.log('resresh')
     searchParams.delete('price');
     searchParams.delete('priceUp');
     searchParams.delete('typeProduct');
@@ -258,7 +270,7 @@ function MainPage(): JSX.Element {
     setCurrentFilterCamera(FilterType.Any);
     setCurrentFilterLevel(FilterLevel.Any);
     browserHistory.replace(`?${searchParams.toString()}`);
-  }
+  };
 
   const handleChangeSortTypeClick = (sortType: SortType): void => {
     searchParams.delete('orderBy');
@@ -335,6 +347,7 @@ function MainPage(): JSX.Element {
                   onFilterPriceSubmit={handleFilterPriceChange}
                   onFilterSubmit={handleFilterChange}
                   onFilterRefresh={handleFilterRefresh}
+                  setCorrectPrice={setCorrectPrice}
                 />
                 <div className="catalog__content">
                   <CatalogSort

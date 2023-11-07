@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { FilterCamera, FilterLevel, FilterType } from '../../types/sort';
 
 
@@ -11,6 +11,7 @@ type CatalogSidebarProps = {
   onFilterSubmit: (filter: Filter) => void;
   onFilterPriceSubmit: (filterPrice: FilterPrice) => void;
   onFilterRefresh: () => void;
+  setCorrectPrice: (priceMin: number, priceMax: number) => void;
 }
 
 type FilterHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -27,7 +28,20 @@ export type Filter = {
 }
 
 
-function CatalogSidebar({typePrice, typePriceUp, typeProduct, typeCamera, typeLevel, onFilterSubmit, onFilterPriceSubmit, onFilterRefresh}: CatalogSidebarProps): JSX.Element {
+function CatalogSidebar({
+  typePrice,
+  typePriceUp,
+  typeProduct,
+  typeCamera,
+  typeLevel,
+  onFilterSubmit,
+  onFilterPriceSubmit,
+  onFilterRefresh,
+  setCorrectPrice,
+}: CatalogSidebarProps): JSX.Element {
+
+  const timeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
+
   const [filter, setFilter] = useState<Filter>({
     camera: typeProduct,
     type: typeCamera,
@@ -49,7 +63,7 @@ function CatalogSidebar({typePrice, typePriceUp, typeProduct, typeCamera, typeLe
     setFilterPrice({
       price: typePrice,
       priceUp: typePriceUp,
-    })
+    });
   }, [typePrice, typePriceUp, typeProduct, typeCamera, typeLevel]);
 
 
@@ -67,7 +81,21 @@ function CatalogSidebar({typePrice, typePriceUp, typeProduct, typeCamera, typeLe
       ...filterPrice,
       [target.name]: target.value,
     });
-  }
+
+    if (target.name === 'price') {
+      clearTimeout(timeoutIdRef.current);
+      timeoutIdRef.current = setTimeout(() => {
+        setCorrectPrice(Number(target.value), filterPrice.priceUp);
+      }, 1000);
+    }
+
+    if (target.name === 'priceUp') {
+      clearTimeout(timeoutIdRef.current);
+      timeoutIdRef.current = setTimeout(() => {
+        setCorrectPrice(filterPrice.price, Number(target.value));
+      }, 1000);
+    }
+  };
 
   const handleFilterChange = ({ target }: FilterHandler) => {
     onFilterSubmit({
