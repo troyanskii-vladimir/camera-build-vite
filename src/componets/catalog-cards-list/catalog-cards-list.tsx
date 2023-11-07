@@ -1,5 +1,8 @@
+import { useAppSelector } from '../../hooks';
+import { getProductsLoadingStatus } from '../../store/product-data/selectors';
 import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
+import Loader from '../loader/loader';
 
 
 type CatalogCardsListProps = {
@@ -8,6 +11,11 @@ type CatalogCardsListProps = {
 }
 
 function CatalogCardsList({products, onAddButtonClick}: CatalogCardsListProps): JSX.Element {
+  const isProductsLoading = useAppSelector(getProductsLoadingStatus);
+
+  if (isProductsLoading) {
+    return (<Loader />);
+  }
 
   if (products.length === 0) {
     return (<h3 className='product-card__info'>По вашему запросу ничего не найдено</h3>);

@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import { DISPLAYED_PRODUCTS } from '../../config';
-import { getProducts, getProductsLoadingStatus, getPromoProducts } from '../../store/product-data/selectors';
+import { getProducts, getPromoProducts } from '../../store/product-data/selectors';
 import { FilterCamera, FilterLevel, FilterType, SortOrder, SortType } from '../../types/sort';
 import browserHistory from '../../browser-history';
 import { useSearchParams } from 'react-router-dom';
@@ -36,7 +36,6 @@ function sortPointsByPriceToLow (a: Product, b: Product): number {
 function MainPage(): JSX.Element {
   const products = useAppSelector(getProducts);
   const promoProducts = useAppSelector(getPromoProducts);
-  const isProductsLoading = useAppSelector(getProductsLoadingStatus);
 
 
   const [searchParams] = useSearchParams();
@@ -45,8 +44,8 @@ function MainPage(): JSX.Element {
   const page = searchParams.get('page') || '1';
   const orderBy = searchParams.get('orderBy') as SortType || SortType.Unsort;
   const orderDirection = searchParams.get('orderDirection') as SortOrder || SortOrder.Unsort;
-  const typePrice = Number(searchParams.get('price')) || 5;
-  const typePriceUp = Number(searchParams.get('priceUp')) || 490500;
+  const typePrice = Number(searchParams.get('price')) || 0;
+  const typePriceUp = Number(searchParams.get('priceUp')) || 0;
   const typeProduct = searchParams.get('typeProduct') as FilterCamera || FilterCamera.Any;
   const typeCamera = searchParams.get('typeCamera') as FilterType || FilterType.Any;
   const typeLevel = searchParams.get('typeLevel') as FilterLevel || FilterType.Any;
@@ -368,10 +367,7 @@ function MainPage(): JSX.Element {
                     onChangeSortTypeCLick={handleChangeSortTypeClick}
                     onChangeSortOrderCLick={handleChangeSortOrderClick}
                   />
-                  {
-                    !isProductsLoading &&
-                    <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick} />
-                  }
+                  <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick} />
                   {
                     Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
                     <Pagination

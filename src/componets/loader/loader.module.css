@@ -1,0 +1,16 @@
+.loader_container {
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loader_container svg {
+  fill: #A2A2FF;
+}
+
+.loader_container p {
+  color: #525288;
+}
