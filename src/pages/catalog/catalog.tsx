@@ -91,6 +91,7 @@ function MainPage(): JSX.Element {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+
   useEffect(() => {
     if (products.length > 0) {
       setMinPriceBase([...products].sort(sortPointsByPriceToTop)[0].price);
@@ -112,7 +113,6 @@ function MainPage(): JSX.Element {
     if (!searchParams.has('priceUp')) {
       setCurrentPriceUp(maxPriceTemp);
     }
-  // }, [currentFilterProduct, minPriceTemp, maxPriceTemp, searchParams]);
   }, [minPriceTemp, maxPriceTemp, searchParams]);
 
 
@@ -191,14 +191,18 @@ function MainPage(): JSX.Element {
 
 
   useEffect(() => {
-    // if (sortedProducts.length === 0) {
-    //   searchParams.delete('page');
-    //   setCurrentPage(1);
-    //   browserHistory.replace(`?${searchParams.toString()}`);
-    // }
     setCurrentProducts(sortedProducts.slice(DISPLAYED_PRODUCTS * (currentPage - 1), DISPLAYED_PRODUCTS * (currentPage - 1) + DISPLAYED_PRODUCTS));
 
   }, [currentPage, page, sortedProducts, currentSortType]);
+
+
+  // useEffect(() => {
+  //   if (filterdProducts.length > 0 && currentProducts.length / filterdProducts.length === 0 && currentPage > 1) {
+  //     searchParams.delete('page');
+  //     setCurrentPage(1);
+  //     browserHistory.replace(`?${searchParams.toString()}`);
+  //   }
+  // }, [currentPage, currentProducts, filterdProducts, searchParams]);
 
 
   const setCorrectPrice = (priceMin: number, priceMax: number) => {
