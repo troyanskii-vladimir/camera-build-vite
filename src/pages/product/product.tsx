@@ -13,8 +13,9 @@ import { Product } from '../../types/product';
 import ModalAddItem from '../../componets/modal-add-item/modal-add-item';
 import ReviewForm from '../../componets/review-form/review-form';
 import ModalSuccessReview from '../../componets/modal-success-review/modal-success-review';
-import { getProductData, getSimilarProducts } from '../../store/product-data/selectors';
+import { getProductData, getProductsLoadingStatus, getSimilarProducts } from '../../store/product-data/selectors';
 import { getReviews } from '../../store/reviews-data/selectors';
+import Loader from '../../componets/loader/loader';
 
 
 enum Tabs {
@@ -31,6 +32,7 @@ function ProductPage(): JSX.Element {
   const product = useAppSelector(getProductData);
   const similarProducts = useAppSelector(getSimilarProducts);
   const reviews = useAppSelector(getReviews);
+  const isProductDataLoading = useAppSelector(getProductsLoadingStatus);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const [modalData, setModalData] = useState<Product | null>(null);
@@ -81,6 +83,10 @@ function ProductPage(): JSX.Element {
     document.body.classList.add('scroll-lock');
     setModalReviewActive(true);
   };
+
+  if (isProductDataLoading) {
+    return (<Loader />);
+  }
 
   if (Object.keys(product).length === 0 || !id) {
     return <Page404 />;

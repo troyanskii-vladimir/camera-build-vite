@@ -21,6 +21,24 @@ function Header(): JSX.Element {
     setResultProducts(null);
   }, [productId]);
 
+  useEffect(() => {
+    const onKeyDown = (evt: KeyboardEvent) => {
+      if (evt.key === 'ArrowDown') {
+        console.log('Стрелка вниз');
+      }
+
+      if (evt.key === 'ArrowUp') {
+        console.log('Стрелка вверх');
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
   const onInputChange = ({ target }: SearchHandler) => {
     setInputValue(target.value);
     if (target.value === '') {
