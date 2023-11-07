@@ -3,8 +3,6 @@ import { FilterCamera, FilterLevel, FilterType } from '../../types/sort';
 
 
 type CatalogSidebarProps = {
-  minPrice: number;
-  maxPrice: number;
   typePrice: number;
   typePriceUp: number;
   typeProduct: FilterCamera;
@@ -12,10 +10,10 @@ type CatalogSidebarProps = {
   typeLevel: FilterLevel;
   onFilterSubmit: (filter: Filter) => void;
   onFilterPriceSubmit: (filterPrice: FilterPrice) => void;
+  onFilterRefresh: () => void;
 }
 
 type FilterHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
-
 
 export type FilterPrice = {
   price: number;
@@ -29,7 +27,7 @@ export type Filter = {
 }
 
 
-function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct, typeCamera, typeLevel, onFilterSubmit, onFilterPriceSubmit}: CatalogSidebarProps): JSX.Element {
+function CatalogSidebar({typePrice, typePriceUp, typeProduct, typeCamera, typeLevel, onFilterSubmit, onFilterPriceSubmit, onFilterRefresh}: CatalogSidebarProps): JSX.Element {
   const [filter, setFilter] = useState<Filter>({
     camera: typeProduct,
     type: typeCamera,
@@ -56,27 +54,7 @@ function CatalogSidebar({minPrice, maxPrice, typePrice, typePriceUp, typeProduct
 
 
   const handleFilterRefresh = () => {
-    onFilterPriceSubmit({
-      price: minPrice,
-      priceUp: maxPrice,
-    });
-
-    // setFilterPrice({
-    //   price: minPrice,
-    //   priceUp: maxPrice,
-    // });
-
-    onFilterSubmit({
-      camera: FilterCamera.Any,
-      type: FilterType.Any,
-      level: FilterLevel.Any,
-    });
-
-    // setFilter({
-    //   camera: FilterCamera.Any,
-    //   type: FilterType.Any,
-    //   level: FilterLevel.Any,
-    // });
+    onFilterRefresh();
   };
 
   const handleFilterPriceChange = ({target}: FilterHandler) => {

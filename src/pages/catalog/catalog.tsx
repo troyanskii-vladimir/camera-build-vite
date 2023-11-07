@@ -204,6 +204,7 @@ function MainPage(): JSX.Element {
 
 
   const handleFilterPriceChange = (filterPrice: FilterPrice) => {
+    console.log('price')
     if (filterPrice.price !== currentPrice) {
       searchParams.delete('price');
       searchParams.append('price', String(filterPrice.price));
@@ -220,6 +221,7 @@ function MainPage(): JSX.Element {
   }
 
   const handleFilterChange = (filter: Filter) => {
+    console.log('filter')
     if (filter.camera !== FilterCamera.Any) {
       searchParams.delete('typeProduct');
       searchParams.append('typeProduct', filter.camera);
@@ -240,6 +242,23 @@ function MainPage(): JSX.Element {
 
     browserHistory.replace(`?${searchParams.toString()}`);
   };
+
+  const handleFilterRefresh = () => {
+    console.log('resresh')
+    searchParams.delete('price');
+    searchParams.delete('priceUp');
+    searchParams.delete('typeProduct');
+    searchParams.delete('typeCamera');
+    searchParams.delete('typeLevel');
+    setCurrentPrice(minPriceBase);
+    setCurrentPriceUp(maxPriceBase);
+    setMinPriceTemp(minPriceBase);
+    setMaxPriceTemp(maxPriceBase);
+    setCurrentFilterProduct(FilterCamera.Any);
+    setCurrentFilterCamera(FilterType.Any);
+    setCurrentFilterLevel(FilterLevel.Any);
+    browserHistory.replace(`?${searchParams.toString()}`);
+  }
 
   const handleChangeSortTypeClick = (sortType: SortType): void => {
     searchParams.delete('orderBy');
@@ -308,8 +327,6 @@ function MainPage(): JSX.Element {
               <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
               <div className="page-content__columns">
                 <CatalogSidebar
-                  minPrice={minPriceBase}
-                  maxPrice={maxPriceBase}
                   typePrice={currentPrice}
                   typePriceUp={currentPriceUp}
                   typeProduct={currentFilterProduct}
@@ -317,6 +334,7 @@ function MainPage(): JSX.Element {
                   typeLevel={currentFilterLevel}
                   onFilterPriceSubmit={handleFilterPriceChange}
                   onFilterSubmit={handleFilterChange}
+                  onFilterRefresh={handleFilterRefresh}
                 />
                 <div className="catalog__content">
                   <CatalogSort
