@@ -4,6 +4,7 @@ import { useAppSelector } from '../../hooks';
 import { getProductData, getProducts } from '../../store/product-data/selectors';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Product } from '../../types/product';
+import FocusTrap from 'focus-trap-react';
 
 
 type SearchHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -21,23 +22,27 @@ function Header(): JSX.Element {
     setResultProducts(null);
   }, [productId]);
 
-  useEffect(() => {
-    const onKeyDown = (evt: KeyboardEvent) => {
-      if (evt.key === 'ArrowDown') {
-        console.log('Стрелка вниз');
-      }
+  // useEffect(() => {
+  //   const onKeyDown = (evt: KeyboardEvent) => {
+  //     if (evt.key === 'ArrowDown') {
+  //       console.log('Стрелка вниз');
+  //     }
 
-      if (evt.key === 'ArrowUp') {
-        console.log('Стрелка вверх');
-      }
-    };
+  //     if (evt.key === 'ArrowUp') {
+  //       console.log('Стрелка вверх');
+  //     }
+  //   };
 
-    document.addEventListener('keydown', onKeyDown);
+  //   document.addEventListener('keydown', onKeyDown);
 
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener('keydown', onKeyDown);
+  //   };
+  // }, []);
+
+  const isArrowUpPress = (evt: KeyboardEvent): boolean => evt.key === 'ArrowUp';
+
+  const isArrowDownPress = (evt: KeyboardEvent): boolean => evt.key === 'ArrowDown';
 
   const onInputChange = ({ target }: SearchHandler) => {
     setInputValue(target.value);
@@ -113,17 +118,26 @@ function Header(): JSX.Element {
                 value={inpuValue}
               />
             </label>
-            <ul className='form-search__select-list'>
-              {
-                resultProducts?.map((product) => (
-                  <Link key={product.id} to={`${AppRoute.Product}/${product.id}`}>
-                    <li className="form-search__select-item">
-                      {product.name}
-                    </li>
-                  </Link>
-                ))
-              }
-            </ul>
+            <FocusTrap focusTrapOptions={{
+              fallbackFocus: '.form-search__select-list',
+              allowOutsideClick: true,
+              preventScroll: false,
+              isKeyBackward: isArrowUpPress,
+              isKeyForward: isArrowDownPress,
+            }}
+            >
+              <ul className='form-search__select-list'>
+                {
+                  resultProducts?.map((product) => (
+                    <Link key={product.id} to={`${AppRoute.Product}/${product.id}`}>
+                      <li className="form-search__select-item">
+                        {product.name}
+                      </li>
+                    </Link>
+                  ))
+                }
+              </ul>
+            </FocusTrap>
           </form>
           <button className="form-search__reset" type="reset" onClick={onClearButtonClick}>
             <svg width={10} height={10} aria-hidden="true">
