@@ -14,23 +14,7 @@ import { getProducts, getPromoProducts } from '../../store/product-data/selector
 import { FilterCamera, FilterLevel, FilterType, SortOrder, SortType } from '../../types/sort';
 import browserHistory from '../../browser-history';
 import { useSearchParams } from 'react-router-dom';
-
-
-function sortPointsByRatingToTop (a: Product, b: Product): number {
-  return a.rating > b.rating ? 1 : -1;
-}
-
-function sortPointsByRatingToLow (a: Product, b: Product): number {
-  return a.rating < b.rating ? 1 : -1;
-}
-
-function sortPointsByPriceToTop (a: Product, b: Product): number {
-  return a.price > b.price ? 1 : -1;
-}
-
-function sortPointsByPriceToLow (a: Product, b: Product): number {
-  return a.price < b.price ? 1 : -1;
-}
+import { sortPointsByPriceToLow, sortPointsByPriceToTop, sortPointsByRatingToLow, sortPointsByRatingToTop } from '../../utils/utils';
 
 
 function MainPage(): JSX.Element {

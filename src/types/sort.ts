@@ -28,5 +28,5 @@ export enum FilterLevel {
   Nullable = 'nullable',
   Amateur = 'amateur',
   Professional = 'professional',
-Any = 'any',
+  Any = 'any',
 }
