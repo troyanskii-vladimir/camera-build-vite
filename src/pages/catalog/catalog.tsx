@@ -246,6 +246,9 @@ function MainPage(): JSX.Element {
       setCurrentPriceUp(filterPrice.priceUp);
     }
 
+    searchParams.delete('page');
+    setCurrentPage(1);
+
     browserHistory.replace(`?${searchParams.toString()}`);
   };
 
@@ -268,15 +271,20 @@ function MainPage(): JSX.Element {
       setCurrentFilterLevel(filter.level);
     }
 
+    searchParams.delete('page');
+    setCurrentPage(1);
+
     browserHistory.replace(`?${searchParams.toString()}`);
   };
 
   const handleFilterRefresh = () => {
+    searchParams.delete('page');
     searchParams.delete('price');
     searchParams.delete('priceUp');
     searchParams.delete('typeProduct');
     searchParams.delete('typeCamera');
     searchParams.delete('typeLevel');
+    setCurrentPage(1);
     setCurrentPrice(minPriceBase);
     setCurrentPriceUp(maxPriceBase);
     setMinPriceTemp(minPriceBase);
