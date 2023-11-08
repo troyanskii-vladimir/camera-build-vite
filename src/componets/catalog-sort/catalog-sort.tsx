@@ -26,6 +26,7 @@ function CatalogSort({orderBy, orderDirection, onChangeSortTypeCLick, onChangeSo
                 onChange={() => {
                   onChangeSortTypeCLick(SortType.Price);
                 }}
+                data-testid='filterPrice'
               />
               <label htmlFor="sortPrice">по цене</label>
             </div>
@@ -38,6 +39,7 @@ function CatalogSort({orderBy, orderDirection, onChangeSortTypeCLick, onChangeSo
                 onChange={() => {
                   onChangeSortTypeCLick(SortType.Rating);
                 }}
+                data-testid='filterRating'
               />
               <label htmlFor="sortPopular">по популярности</label>
             </div>
@@ -53,6 +55,7 @@ function CatalogSort({orderBy, orderDirection, onChangeSortTypeCLick, onChangeSo
                 onChange={() => {
                   onChangeSortOrderCLick(SortOrder.ToTop);
                 }}
+                data-testid='filterToTop'
               />
               <label htmlFor="up">
                 <svg width={16} height={14} aria-hidden="true">
@@ -70,6 +73,7 @@ function CatalogSort({orderBy, orderDirection, onChangeSortTypeCLick, onChangeSo
                 onChange={() => {
                   onChangeSortOrderCLick(SortOrder.ToLow);
                 }}
+                data-testid='filterToLow'
               />
               <label htmlFor="down">
                 <svg width={16} height={14} aria-hidden="true">

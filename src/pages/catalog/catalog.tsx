@@ -196,15 +196,6 @@ function MainPage(): JSX.Element {
   }, [currentPage, page, sortedProducts, currentSortType]);
 
 
-  // useEffect(() => {
-  //   if (filterdProducts.length > 0 && currentProducts.length / filterdProducts.length === 0 && currentPage > 1) {
-  //     searchParams.delete('page');
-  //     setCurrentPage(1);
-  //     browserHistory.replace(`?${searchParams.toString()}`);
-  //   }
-  // }, [currentPage, currentProducts, filterdProducts, searchParams]);
-
-
   const setCorrectPrice = (priceMin: number, priceMax: number) => {
     if (priceMin < 0) {
       searchParams.delete('price');

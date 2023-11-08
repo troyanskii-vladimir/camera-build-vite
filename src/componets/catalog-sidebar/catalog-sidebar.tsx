@@ -77,11 +77,6 @@ function CatalogSidebar({
       [target.name]: target.value,
     });
 
-    setFilterPrice({
-      ...filterPrice,
-      [target.name]: target.value,
-    });
-
     if (target.name === 'price') {
       clearTimeout(timeoutIdRef.current);
       timeoutIdRef.current = setTimeout(() => {
@@ -99,11 +94,6 @@ function CatalogSidebar({
 
   const handleFilterChange = ({ target }: FilterHandler) => {
     onFilterSubmit({
-      ...filter,
-      [target.name]: target.value,
-    });
-
-    setFilter({
       ...filter,
       [target.name]: target.value,
     });
@@ -125,6 +115,7 @@ function CatalogSidebar({
                     placeholder="от"
                     value={typePrice}
                     onChange={handleFilterPriceChange}
+                    data-testid='filterPrice'
                   />
                 </label>
               </div>
@@ -136,6 +127,7 @@ function CatalogSidebar({
                     placeholder="до"
                     value={typePriceUp}
                     onChange={handleFilterPriceChange}
+                    data-testid='filterPriceUp'
                   />
                 </label>
               </div>

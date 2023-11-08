@@ -36,10 +36,10 @@ describe('Component: Pagination', () => {
   });
 
 
-  it('should display 10,11,12 pages and button "prev" when current page 11', () => {
+  it('should display 10,11,12 pages and button "prev" when current page 12', () => {
     const fakeProducts = Array(100).fill(makeFakeProduct());
     const countOfPages = Math.ceil(fakeProducts.length / DISPLAYED_PRODUCTS);
-    const preparedComponent = withHistory(<Pagination currentPage={11} countOfPages={countOfPages} onNumberButtonClick={() => (null)} />);
+    const preparedComponent = withHistory(<Pagination currentPage={12} countOfPages={countOfPages} onNumberButtonClick={() => (null)} />);
 
     render(preparedComponent);
 
