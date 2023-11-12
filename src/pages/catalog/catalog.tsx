@@ -232,19 +232,29 @@ function MainPage(): JSX.Element {
       searchParams.delete('typeProduct');
       searchParams.append('typeProduct', filter.camera);
       setCurrentFilterProduct(filter.camera);
+    } else {
+      searchParams.delete('typeProduct');
+      setCurrentFilterProduct(FilterCamera.Any);
     }
 
     if (filter.type !== FilterType.Any) {
       searchParams.delete('typeCamera');
       searchParams.append('typeCamera', filter.type);
       setCurrentFilterCamera(filter.type);
+    } else {
+      searchParams.delete('typeCamera');
+      setCurrentFilterCamera(FilterType.Any);
     }
 
     if (filter.level !== FilterLevel.Any) {
       searchParams.delete('typeLevel');
       searchParams.append('typeLevel', filter.level);
       setCurrentFilterLevel(filter.level);
+    } else {
+      searchParams.delete('typeLevel');
+      setCurrentFilterLevel(FilterLevel.Any);
     }
+
 
     searchParams.delete('page');
     setCurrentPage(1);

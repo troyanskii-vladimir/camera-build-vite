@@ -93,10 +93,27 @@ function CatalogSidebar({
   };
 
   const handleFilterChange = ({ target }: FilterHandler) => {
-    onFilterSubmit({
-      ...filter,
-      [target.name]: target.value,
-    });
+    if (filter.camera === target.value) {
+      onFilterSubmit({
+        ...filter,
+        camera: FilterCamera.Any,
+      });
+    } else if (filter.type === target.value) {
+      onFilterSubmit({
+        ...filter,
+        type: FilterType.Any,
+      });
+    } else if (filter.level === target.value) {
+      onFilterSubmit({
+        ...filter,
+        level: FilterLevel.Any,
+      });
+    } else {
+      onFilterSubmit({
+        ...filter,
+        [target.name]: target.value,
+      });
+    }
   };
 
   return (
