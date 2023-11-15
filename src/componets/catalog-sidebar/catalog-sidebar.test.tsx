@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import CatalogSidebar from './catalog-sidebar';
 import { withHistory } from '../../utils/mock-component';
-import { FilterCamera, FilterLevel, FilterType } from '../../types/sort';
+import { FilterCamera } from '../../types/sort';
 
 
 describe('Component: CatalogSidebar', () => {
@@ -15,12 +15,15 @@ describe('Component: CatalogSidebar', () => {
         typePrice={fakePriceDown}
         typePriceUp={fakePriceUp}
         typeProduct={FilterCamera.Any}
-        typeCamera={FilterType.Any}
-        typeLevel={FilterLevel.Any}
+        typeCamera={[]}
+        typeLevel={[]}
+        minPriceTemp={fakePriceDown}
+        maxPriceTemp={fakePriceUp}
         onFilterPriceSubmit={() => (null)}
         onFilterSubmit={() => (null)}
         onFilterRefresh={() => (null)}
-        setCorrectPrice={() => (null)}
+        setCorrectPriceMin={() => (null)}
+        setCorrectPriceMax={() => (null)}
       />
     );
 
