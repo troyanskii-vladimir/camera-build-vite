@@ -31,6 +31,9 @@ function Header(): JSX.Element {
   };
 
   const isArrowDownPress = (evt: KeyboardEvent): boolean => {
+    if (evt.key === 'Tab') {
+      return true;
+    }
     if (evt.key === 'ArrowDown') {
       evt.preventDefault();
       return true;
@@ -92,7 +95,7 @@ function Header(): JSX.Element {
             </li>
           </ul>
         </nav>
-        <div className={`form-search ${isListVisible ? 'list-opened' : ''}`}>
+        <div className={`form-search ${inpuValue.length > 0 ? 'list-opened' : ''}`}>
           <form>
             <label>
               <svg
@@ -113,27 +116,30 @@ function Header(): JSX.Element {
                 data-testid="searchInputElement"
               />
             </label>
-            <FocusTrap focusTrapOptions={{
-              fallbackFocus: 'a',
-              initialFocus: false,
-              allowOutsideClick: true,
-              preventScroll: false,
-              isKeyBackward: isArrowUpPress,
-              isKeyForward: isArrowDownPress,
-            }}
-            >
-              <ul className='form-search__select-list'>
-                {
-                  resultProducts?.map((product) => (
-                    <Link key={product.id} to={`${AppRoute.Product}/${product.id}`}>
-                      <li className="form-search__select-item">
-                        {product.name}
-                      </li>
-                    </Link>
-                  ))
-                }
-              </ul>
-            </FocusTrap>
+            {
+              isListVisible &&
+              <FocusTrap focusTrapOptions={{
+                fallbackFocus: 'a',
+                initialFocus: false,
+                allowOutsideClick: true,
+                preventScroll: false,
+                isKeyBackward: isArrowUpPress,
+                isKeyForward: isArrowDownPress,
+              }}
+              >
+                <ul className='form-search__select-list'>
+                  {
+                    resultProducts?.map((product) => (
+                      <Link key={product.id} to={`${AppRoute.Product}/${product.id}`}>
+                        <li className="form-search__select-item">
+                          {product.name}
+                        </li>
+                      </Link>
+                    ))
+                  }
+                </ul>
+              </FocusTrap>
+            }
           </form>
           <button className="form-search__reset" type="reset" onClick={onClearButtonClick}>
             <svg width={10} height={10} aria-hidden="true">

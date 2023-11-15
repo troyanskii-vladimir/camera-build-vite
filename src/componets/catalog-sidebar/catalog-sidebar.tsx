@@ -3,28 +3,31 @@ import { FilterCamera, FilterLevel, FilterType } from '../../types/sort';
 
 
 type CatalogSidebarProps = {
-  typePrice: number;
-  typePriceUp: number;
+  typePrice: number | '';
+  typePriceUp: number | '';
   typeProduct: FilterCamera;
-  typeCamera: FilterType;
-  typeLevel: FilterLevel;
+  typeCamera: FilterType[];
+  typeLevel: FilterLevel[];
+  minPriceTemp: number;
+  maxPriceTemp: number;
   onFilterSubmit: (filter: Filter) => void;
   onFilterPriceSubmit: (filterPrice: FilterPrice) => void;
   onFilterRefresh: () => void;
-  setCorrectPrice: (priceMin: number, priceMax: number) => void;
+  setCorrectPriceMin: (priceMin: number) => void;
+  setCorrectPriceMax: (priceMax: number) => void;
 }
 
 type FilterHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 export type FilterPrice = {
-  price: number;
-  priceUp: number;
+  price: number | '';
+  priceUp: number | '';
 }
 
 export type Filter = {
   camera: FilterCamera;
-  type: FilterType;
-  level: FilterLevel;
+  type: FilterType[];
+  level: FilterLevel[];
 }
 
 
@@ -34,10 +37,13 @@ function CatalogSidebar({
   typeProduct,
   typeCamera,
   typeLevel,
+  minPriceTemp,
+  maxPriceTemp,
   onFilterSubmit,
   onFilterPriceSubmit,
   onFilterRefresh,
-  setCorrectPrice,
+  setCorrectPriceMin,
+  setCorrectPriceMax,
 }: CatalogSidebarProps): JSX.Element {
 
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
@@ -80,38 +86,57 @@ function CatalogSidebar({
     if (target.name === 'price') {
       clearTimeout(timeoutIdRef.current);
       timeoutIdRef.current = setTimeout(() => {
-        setCorrectPrice(Number(target.value), filterPrice.priceUp);
+        setCorrectPriceMin(Number(target.value));
       }, 1000);
     }
 
     if (target.name === 'priceUp') {
       clearTimeout(timeoutIdRef.current);
       timeoutIdRef.current = setTimeout(() => {
-        setCorrectPrice(filterPrice.price, Number(target.value));
+        setCorrectPriceMax(Number(target.value));
       }, 1000);
     }
   };
 
-  const handleFilterChange = ({ target }: FilterHandler) => {
-    if (filter.camera === target.value) {
+  const handleProductChange = ({ target }: FilterHandler) => {
+    onFilterSubmit({
+      ...filter,
+      [target.name]: target.value,
+    });
+  };
+
+  const handleTypeChange = ({ target }: FilterHandler) => {
+    const clickedType = target.value as FilterType;
+    if (filter.type.includes(clickedType)) {
+      const typeArray = filter.type.filter((type) => type !== clickedType);
       onFilterSubmit({
         ...filter,
-        camera: FilterCamera.Any,
-      });
-    } else if (filter.type === target.value) {
-      onFilterSubmit({
-        ...filter,
-        type: FilterType.Any,
-      });
-    } else if (filter.level === target.value) {
-      onFilterSubmit({
-        ...filter,
-        level: FilterLevel.Any,
+        [target.name]: typeArray,
       });
     } else {
+      const typeArray = [...filter.type];
+      typeArray.push(clickedType);
       onFilterSubmit({
         ...filter,
-        [target.name]: target.value,
+        [target.name]: typeArray,
+      });
+    }
+  };
+
+  const handleLevelChange = ({ target }: FilterHandler) => {
+    const clickedLevel = target.value as FilterLevel;
+    if (filter.level.includes(clickedLevel)) {
+      const levelArray = filter.level.filter((type) => type !== clickedLevel);
+      onFilterSubmit({
+        ...filter,
+        [target.name]: levelArray,
+      });
+    } else {
+      const levelArray = [...filter.level];
+      levelArray.push(clickedLevel);
+      onFilterSubmit({
+        ...filter,
+        [target.name]: levelArray,
       });
     }
   };
@@ -129,7 +154,7 @@ function CatalogSidebar({
                   <input
                     type="number"
                     name="price"
-                    placeholder="от"
+                    placeholder={String(minPriceTemp)}
                     value={typePrice}
                     onChange={handleFilterPriceChange}
                     data-testid='filterPrice'
@@ -141,7 +166,7 @@ function CatalogSidebar({
                   <input
                     type="number"
                     name="priceUp"
-                    placeholder="до"
+                    placeholder={String(maxPriceTemp)}
                     value={typePriceUp}
                     onChange={handleFilterPriceChange}
                     data-testid='filterPriceUp'
@@ -159,7 +184,7 @@ function CatalogSidebar({
                   name="camera"
                   value={FilterCamera.Photo}
                   checked={typeProduct === FilterCamera.Photo}
-                  onChange={handleFilterChange}
+                  onChange={handleProductChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -174,7 +199,7 @@ function CatalogSidebar({
                   name="camera"
                   value={FilterCamera.Video}
                   checked={typeProduct === FilterCamera.Video}
-                  onChange={handleFilterChange}
+                  onChange={handleProductChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -191,8 +216,8 @@ function CatalogSidebar({
                   type="checkbox"
                   name="type"
                   value={FilterType.Digital}
-                  checked={typeCamera === FilterType.Digital}
-                  onChange={handleFilterChange}
+                  checked={typeCamera.includes(FilterType.Digital)}
+                  onChange={handleTypeChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">Цифровая</span>
@@ -204,9 +229,9 @@ function CatalogSidebar({
                   type="checkbox"
                   name="type"
                   value={FilterType.Film}
-                  checked={typeCamera === FilterType.Film}
+                  checked={typeCamera.includes(FilterType.Film)}
                   disabled={typeProduct === FilterCamera.Video}
-                  onChange={handleFilterChange}
+                  onChange={handleTypeChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -220,9 +245,9 @@ function CatalogSidebar({
                   type="checkbox"
                   name="type"
                   value={FilterType.Snapshot}
-                  checked={typeCamera === FilterType.Snapshot}
+                  checked={typeCamera.includes(FilterType.Snapshot)}
                   disabled={typeProduct === FilterCamera.Video}
-                  onChange={handleFilterChange}
+                  onChange={handleTypeChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -236,8 +261,8 @@ function CatalogSidebar({
                   type="checkbox"
                   name="type"
                   value={FilterType.Collection}
-                  checked={typeCamera === FilterType.Collection}
-                  onChange={handleFilterChange}
+                  checked={typeCamera.includes(FilterType.Collection)}
+                  onChange={handleTypeChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -254,8 +279,8 @@ function CatalogSidebar({
                   type="checkbox"
                   name="level"
                   value={FilterLevel.Nullable}
-                  checked={typeLevel === FilterLevel.Nullable}
-                  onChange={handleFilterChange}
+                  checked={typeLevel.includes(FilterLevel.Nullable)}
+                  onChange={handleLevelChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">Нулевой</span>
@@ -267,8 +292,8 @@ function CatalogSidebar({
                   type="checkbox"
                   name="level"
                   value={FilterLevel.Amateur}
-                  checked={typeLevel === FilterLevel.Amateur}
-                  onChange={handleFilterChange}
+                  checked={typeLevel.includes(FilterLevel.Amateur)}
+                  onChange={handleLevelChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">
@@ -282,8 +307,8 @@ function CatalogSidebar({
                   type="checkbox"
                   name="level"
                   value={FilterLevel.Professional}
-                  checked={typeLevel === FilterLevel.Professional}
-                  onChange={handleFilterChange}
+                  checked={typeLevel.includes(FilterLevel.Professional)}
+                  onChange={handleLevelChange}
                 />
                 <span className="custom-checkbox__icon" />
                 <span className="custom-checkbox__label">

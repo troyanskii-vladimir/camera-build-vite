@@ -28,11 +28,11 @@ function MainPage(): JSX.Element {
   const page = searchParams.get('page') || '1';
   const orderBy = searchParams.get('orderBy') as SortType || SortType.Unsort;
   const orderDirection = searchParams.get('orderDirection') as SortOrder || SortOrder.Unsort;
-  const typePrice = Number(searchParams.get('price')) || 0;
+  const typePrice = Number(searchParams.get('price')) || '';
   const typePriceUp = Number(searchParams.get('priceUp')) || 0;
   const typeProduct = searchParams.get('typeProduct') as FilterCamera || FilterCamera.Any;
-  const typeCamera = searchParams.get('typeCamera') as FilterType || FilterType.Any;
-  const typeLevel = searchParams.get('typeLevel') as FilterLevel || FilterType.Any;
+  const typeCamera = searchParams.getAll('typeCamera') as FilterType[] || [];
+  const typeLevel = searchParams.getAll('typeLevel') as FilterLevel[] || [];
 
   const [modalData, setModalData] = useState<Product | null>(null);
 
@@ -42,13 +42,13 @@ function MainPage(): JSX.Element {
   const [currentPage, setCurrentPage] = useState(Number(page));
   const [currentSortType, setCurrentSortType] = useState<SortType>(orderBy);
   const [currentSortDirection, setCurrentSortDirection] = useState<SortOrder>(orderDirection);
-  const [currentPrice, setCurrentPrice] = useState<number>(typePrice);
-  const [currentPriceUp, setCurrentPriceUp] = useState<number>(typePriceUp);
+  const [currentPrice, setCurrentPrice] = useState<number | ''>(typePrice);
+  const [currentPriceUp, setCurrentPriceUp] = useState<number | ''>(typePriceUp);
   const [currentFilterProduct, setCurrentFilterProduct] = useState<FilterCamera>(typeProduct);
-  const [currentFilterCamera, setCurrentFilterCamera] = useState<FilterType>(typeCamera);
-  const [currentFilterLevel, setCurrentFilterLevel] = useState<FilterLevel>(typeLevel);
+  const [currentFilterCamera, setCurrentFilterCamera] = useState<FilterType[]>(typeCamera);
+  const [currentFilterLevel, setCurrentFilterLevel] = useState<FilterLevel[]>(typeLevel);
 
-  const [minPriceBase, setMinPriceBase] = useState<number>(typePrice);
+  const [minPriceBase, setMinPriceBase] = useState<number>(Number(typePrice));
   const [minPriceTemp, setMinPriceTemp] = useState<number>(minPriceBase);
   const [maxPriceBase, setMaxPriceBase] = useState<number>(typePriceUp);
   const [maxPriceTemp, setMaxPriceTemp] = useState<number>(maxPriceBase);
@@ -91,23 +91,22 @@ function MainPage(): JSX.Element {
 
   useEffect(() => {
     if (!searchParams.has('price')) {
-      setCurrentPrice(minPriceTemp);
+      setCurrentPrice('');
     }
 
     if (!searchParams.has('priceUp')) {
-      setCurrentPriceUp(maxPriceTemp);
+      setCurrentPriceUp('');
     }
   }, [minPriceTemp, maxPriceTemp, searchParams]);
-
 
   useEffect(() => {
     let tempProducts: Product[] = [...products];
 
-    if (searchParams.has('price')) {
+    if (searchParams.has('price') && currentPrice !== '') {
       tempProducts = [...tempProducts].filter((product) => product.price >= currentPrice);
     }
 
-    if (searchParams.has('priceUp')) {
+    if (searchParams.has('priceUp') && currentPriceUp !== '') {
       tempProducts = [...tempProducts].filter((product) => product.price <= currentPriceUp);
     }
 
@@ -119,33 +118,21 @@ function MainPage(): JSX.Element {
       tempProducts = [...tempProducts].filter((product) => product.category === 'Видеокамера');
     }
 
-    if (currentFilterCamera === FilterType.Digital) {
-      tempProducts = [...tempProducts].filter((product) => product.type === 'Цифровая');
+    if (currentFilterCamera.length > 0) {
+      const digital = (currentFilterCamera.includes(FilterType.Digital)) ? 'Цифровая' : '';
+      const film = (currentFilterCamera.includes(FilterType.Film)) ? 'Плёночная' : '';
+      const snapshot = (currentFilterCamera.includes(FilterType.Snapshot)) ? 'Моментальная' : '';
+      const collection = (currentFilterCamera.includes(FilterType.Collection)) ? 'Коллекционная' : '';
+      tempProducts = [...tempProducts].filter((product) => product.type === digital || product.type === film || product.type === snapshot || product.type === collection);
     }
 
-    if (currentFilterCamera === FilterType.Film) {
-      tempProducts = [...tempProducts].filter((product) => product.type === 'Коллекционная');
+    if (currentFilterLevel.length > 0) {
+      const nullable = (currentFilterLevel.includes(FilterLevel.Nullable)) ? 'Нулевой' : '';
+      const amateur = (currentFilterLevel.includes(FilterLevel.Amateur)) ? 'Любительский' : '';
+      const professional = (currentFilterLevel.includes(FilterLevel.Professional)) ? 'Профессиональный' : '';
+      tempProducts = [...tempProducts].filter((product) => product.level === nullable || product.level === amateur || product.level === professional);
     }
 
-    if (currentFilterCamera === FilterType.Snapshot) {
-      tempProducts = [...tempProducts].filter((product) => product.type === 'Моментальная');
-    }
-
-    if (currentFilterCamera === FilterType.Collection) {
-      tempProducts = [...tempProducts].filter((product) => product.type === 'Плёночная');
-    }
-
-    if (currentFilterLevel === FilterLevel.Nullable) {
-      tempProducts = [...tempProducts].filter((product) => product.level === 'Нулевой');
-    }
-
-    if (currentFilterLevel === FilterLevel.Amateur) {
-      tempProducts = [...tempProducts].filter((product) => product.level === 'Любительский');
-    }
-
-    if (currentFilterLevel === FilterLevel.Professional) {
-      tempProducts = [...tempProducts].filter((product) => product.level === 'Профессиональный');
-    }
 
     setFilteredProducts(tempProducts);
 
@@ -180,23 +167,33 @@ function MainPage(): JSX.Element {
   }, [currentPage, page, sortedProducts, currentSortType]);
 
 
-  const setCorrectPrice = (priceMin: number, priceMax: number) => {
+  const setCorrectPriceMin = (priceMin: number) => {
     if (priceMin < 0) {
       searchParams.delete('price');
       searchParams.append('price', String(minPriceBase));
       setCurrentPrice(minPriceBase);
     }
 
-    if (priceMin < minPriceBase) {
+    if (priceMin < Number(minPriceTemp)) {
       searchParams.delete('price');
-      searchParams.append('price', String(minPriceBase));
-      setCurrentPrice(minPriceBase);
+      searchParams.append('price', String(minPriceTemp));
+      setCurrentPrice(minPriceTemp);
     }
 
-    if (priceMax < currentPrice) {
+    if (Number(currentPriceUp) > 0 && priceMin > Number(currentPriceUp)) {
+      searchParams.delete('price');
+      searchParams.append('price', String(currentPriceUp));
+      setCurrentPrice(currentPriceUp);
+    }
+
+    browserHistory.replace(`?${searchParams.toString()}`);
+  };
+
+  const setCorrectPriceMax = (priceMax: number) => {
+    if (priceMax < Number(currentPrice)) {
       searchParams.delete('priceUp');
       searchParams.append('priceUp', String(currentPrice));
-      setCurrentPriceUp(currentPrice);
+      setCurrentPriceUp(Number(currentPrice));
     }
 
     if (priceMax > maxPriceBase) {
@@ -237,22 +234,22 @@ function MainPage(): JSX.Element {
       setCurrentFilterProduct(FilterCamera.Any);
     }
 
-    if (filter.type !== FilterType.Any) {
+    if (filter.type) {
       searchParams.delete('typeCamera');
-      searchParams.append('typeCamera', filter.type);
+      filter.type.forEach((type) => searchParams.append('typeCamera', type));
       setCurrentFilterCamera(filter.type);
     } else {
       searchParams.delete('typeCamera');
-      setCurrentFilterCamera(FilterType.Any);
+      setCurrentFilterCamera([]);
     }
 
-    if (filter.level !== FilterLevel.Any) {
+    if (filter.level) {
       searchParams.delete('typeLevel');
-      searchParams.append('typeLevel', filter.level);
+      filter.level.forEach((level) => searchParams.append('typeLevel', level));
       setCurrentFilterLevel(filter.level);
     } else {
       searchParams.delete('typeLevel');
-      setCurrentFilterLevel(FilterLevel.Any);
+      setCurrentFilterLevel([]);
     }
 
 
@@ -275,8 +272,8 @@ function MainPage(): JSX.Element {
     setMinPriceTemp(minPriceBase);
     setMaxPriceTemp(maxPriceBase);
     setCurrentFilterProduct(FilterCamera.Any);
-    setCurrentFilterCamera(FilterType.Any);
-    setCurrentFilterLevel(FilterLevel.Any);
+    setCurrentFilterCamera([]);
+    setCurrentFilterLevel([]);
     browserHistory.replace(`?${searchParams.toString()}`);
   };
 
@@ -352,10 +349,13 @@ function MainPage(): JSX.Element {
                   typeProduct={currentFilterProduct}
                   typeCamera={currentFilterCamera}
                   typeLevel={currentFilterLevel}
+                  minPriceTemp={minPriceTemp}
+                  maxPriceTemp={maxPriceTemp}
                   onFilterPriceSubmit={handleFilterPriceChange}
                   onFilterSubmit={handleFilterChange}
                   onFilterRefresh={handleFilterRefresh}
-                  setCorrectPrice={setCorrectPrice}
+                  setCorrectPriceMin={setCorrectPriceMin}
+                  setCorrectPriceMax={setCorrectPriceMax}
                 />
                 <div className="catalog__content">
                   <CatalogSort
