@@ -99,6 +99,7 @@ function MainPage(): JSX.Element {
     }
   }, [minPriceTemp, maxPriceTemp, searchParams]);
 
+
   useEffect(() => {
     let tempProducts: Product[] = [...products];
 
@@ -132,7 +133,6 @@ function MainPage(): JSX.Element {
       const professional = (currentFilterLevel.includes(FilterLevel.Professional)) ? 'Профессиональный' : '';
       tempProducts = [...tempProducts].filter((product) => product.level === nullable || product.level === amateur || product.level === professional);
     }
-
 
     setFilteredProducts(tempProducts);
 
@@ -174,7 +174,7 @@ function MainPage(): JSX.Element {
       setCurrentPrice(minPriceBase);
     }
 
-    if (priceMin < Number(minPriceTemp)) {
+    if (priceMin < minPriceTemp) {
       searchParams.delete('price');
       searchParams.append('price', String(minPriceTemp));
       setCurrentPrice(minPriceTemp);
@@ -190,6 +190,12 @@ function MainPage(): JSX.Element {
   };
 
   const setCorrectPriceMax = (priceMax: number) => {
+    if (priceMax < minPriceTemp) {
+      searchParams.delete('priceUp');
+      searchParams.append('priceUp', String(minPriceTemp));
+      setCurrentPriceUp(minPriceTemp);
+    }
+
     if (priceMax < Number(currentPrice)) {
       searchParams.delete('priceUp');
       searchParams.append('priceUp', String(currentPrice));

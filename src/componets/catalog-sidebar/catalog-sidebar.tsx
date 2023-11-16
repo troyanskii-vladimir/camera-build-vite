@@ -99,10 +99,17 @@ function CatalogSidebar({
   };
 
   const handleProductChange = ({ target }: FilterHandler) => {
-    onFilterSubmit({
-      ...filter,
-      [target.name]: target.value,
-    });
+    if (filter.camera === target.value) {
+      onFilterSubmit({
+        ...filter,
+        camera: FilterCamera.Any,
+      });
+    } else {
+      onFilterSubmit({
+        ...filter,
+        [target.name]: target.value,
+      });
+    }
   };
 
   const handleTypeChange = ({ target }: FilterHandler) => {
