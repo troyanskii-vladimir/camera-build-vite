@@ -202,8 +202,8 @@ function MainPage(): JSX.Element {
       tempProducts = [...tempProducts].filter((product) => product.level === nullable || product.level === amateur || product.level === professional);
     }
 
-    const priceMin = [...tempProducts].sort(sortPointsByPriceToTop)[0].price;
-    const priceMax = [...tempProducts].sort(sortPointsByPriceToLow)[0].price;
+    const priceMin = [...tempProducts].sort(sortPointsByPriceToTop)[0]?.price;
+    const priceMax = [...tempProducts].sort(sortPointsByPriceToLow)[0]?.price;
 
     if (price !== '') {
       searchParams.delete('price');
