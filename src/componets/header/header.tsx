@@ -4,7 +4,6 @@ import { useAppSelector } from '../../hooks';
 import { getProductData, getProducts } from '../../store/product-data/selectors';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Product } from '../../types/product';
-import FocusTrap from 'focus-trap-react';
 
 
 type SearchHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -22,23 +21,42 @@ function Header(): JSX.Element {
     setResultProducts(null);
   }, [productId]);
 
-  const isArrowUpPress = (evt: KeyboardEvent): boolean => {
-    if (evt.key === 'ArrowUp') {
-      evt.preventDefault();
-      return true;
+
+  const moveFocusDown = () => {
+    const listItems = document.querySelector('.form-search__select-list')?.childNodes;
+    if (listItems) {
+      const activeItem = document.activeElement;
+      for(let i = 0; i < listItems.length; i++) {
+        const listLength = listItems.length;
+        if(activeItem === listItems[i] && activeItem !== listItems[listLength - 1]) {
+          listItems[i + 1].focus();
+        }
+      }
     }
-    return false;
   };
 
-  const isArrowDownPress = (evt: KeyboardEvent): boolean => {
-    if (evt.key === 'Tab') {
-      return true;
+  const moveFocusUp = () => {
+    const listItems = document.querySelector('.form-search__select-list')?.childNodes;
+    if (listItems) {
+      const activeItem = document.activeElement;
+      for(let i = 0; i < listItems.length; i++) {
+        if (activeItem === listItems[i] && activeItem !== listItems[0]) {
+          listItems[i - 1].focus();
+        }
+      }
     }
+  };
+
+  const handleKeyDown = (evt: KeyboardEvent) => {
+    if (evt.key === 'ArrowUp') {
+      evt.preventDefault();
+      moveFocusUp();
+    }
+
     if (evt.key === 'ArrowDown') {
       evt.preventDefault();
-      return true;
+      moveFocusDown();
     }
-    return false;
   };
 
   const onInputChange = ({ target }: SearchHandler) => {
@@ -95,7 +113,7 @@ function Header(): JSX.Element {
             </li>
           </ul>
         </nav>
-        <div className={`form-search ${inpuValue.length > 0 ? 'list-opened' : ''}`}>
+        <div className={`form-search ${inpuValue.length > 0 ? 'list-opened' : ''}`} onKeyDown={handleKeyDown}>
           <form>
             <label>
               <svg
@@ -118,15 +136,6 @@ function Header(): JSX.Element {
             </label>
             {
               isListVisible &&
-              <FocusTrap focusTrapOptions={{
-                fallbackFocus: 'a',
-                initialFocus: false,
-                allowOutsideClick: true,
-                preventScroll: false,
-                isKeyBackward: isArrowUpPress,
-                isKeyForward: isArrowDownPress,
-              }}
-              >
                 <ul className='form-search__select-list'>
                   {
                     resultProducts?.map((product) => (
@@ -138,7 +147,6 @@ function Header(): JSX.Element {
                     ))
                   }
                 </ul>
-              </FocusTrap>
             }
           </form>
           <button className="form-search__reset" type="reset" onClick={onClearButtonClick}>
