@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { AppRoute } from '../../config';
 import { useAppSelector } from '../../hooks';
 import { getProductData, getProducts } from '../../store/product-data/selectors';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Product } from '../../types/product';
 
 
@@ -12,6 +12,8 @@ type SearchHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 function Header(): JSX.Element {
   const products = useAppSelector(getProducts);
   const productId = useAppSelector(getProductData).id;
+
+  const listRef = useRef<HTMLUListElement>(null);
 
   const [resultProducts, setResultProducts] = useState<Product[] | null>(null);
   const [inpuValue, setInputValue] = useState('');
@@ -23,12 +25,12 @@ function Header(): JSX.Element {
 
 
   const moveFocusDown = () => {
-    const listItems = document.querySelector('.form-search__select-list')?.childNodes;
+    const listItems = Array.from(listRef.current?.children ?? []) as HTMLLIElement[];
     if (listItems) {
       const activeItem = document.activeElement;
-      for(let i = 0; i < listItems.length; i++) {
+      for (let i = 0; i < listItems.length; i++) {
         const listLength = listItems.length;
-        if(activeItem === listItems[i] && activeItem !== listItems[listLength - 1]) {
+        if (activeItem === listItems[i] && activeItem !== listItems[listLength - 1]) {
           listItems[i + 1].focus();
         }
       }
@@ -36,10 +38,10 @@ function Header(): JSX.Element {
   };
 
   const moveFocusUp = () => {
-    const listItems = document.querySelector('.form-search__select-list')?.childNodes;
+    const listItems = Array.from(listRef.current?.children ?? []) as HTMLLIElement[];
     if (listItems) {
       const activeItem = document.activeElement;
-      for(let i = 0; i < listItems.length; i++) {
+      for (let i = 0; i < listItems.length; i++) {
         if (activeItem === listItems[i] && activeItem !== listItems[0]) {
           listItems[i - 1].focus();
         }
@@ -47,7 +49,7 @@ function Header(): JSX.Element {
     }
   };
 
-  const handleKeyDown = (evt: KeyboardEvent) => {
+  const handleKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'ArrowUp') {
       evt.preventDefault();
       moveFocusUp();
@@ -113,7 +115,7 @@ function Header(): JSX.Element {
             </li>
           </ul>
         </nav>
-        <div className={`form-search ${inpuValue.length > 0 ? 'list-opened' : ''}`} onKeyDown={handleKeyDown}>
+        <div className={`form-search ${inpuValue.length > 0 ? 'list-opened' : ''}`}>
           <form>
             <label>
               <svg
@@ -136,7 +138,7 @@ function Header(): JSX.Element {
             </label>
             {
               isListVisible &&
-                <ul className='form-search__select-list'>
+                <ul className='form-search__select-list' ref={listRef} onKeyDown={handleKeyDown}>
                   {
                     resultProducts?.map((product) => (
                       <Link key={product.id} to={`${AppRoute.Product}/${product.id}`}>
