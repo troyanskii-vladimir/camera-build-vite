@@ -3,11 +3,72 @@ import Footer from '../../componets/footer/footer';
 import Header from '../../componets/header/header';
 import { AppRoute } from '../../config';
 import BasketList from '../../componets/basket-list/basket-list';
-import { useAppSelector } from '../../hooks';
-import { getProductsCart } from '../../store/cart-data/selectors';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { getDiscount, getLastCorrectCoupon, getProductsCart } from '../../store/cart-data/selectors';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { checkCouponValueAction, postNewOrderAction } from '../../store/api-action';
+import ModalBuy from '../../componets/modal-buy.tsx/modal-buy';
+import { cleanCart } from '../../store/cart-data/actions';
+
+
+type InputHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 function BasketPage(): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const [coupon, setCoupon] = useState<string>('');
+  const [promoColor, setPromoColor] = useState<string>('');
+  const [modalSuccess, setModalSuccess] = useState<boolean>(false);
+
+  const promoLabelClassName = `custom-input ${promoColor === 'Green' ? 'is-valid' : ''}${promoColor === 'Red' ? 'is-invalid' : ''}`;
+
+
   const products = useAppSelector(getProductsCart);
+  const discount = useAppSelector(getDiscount);
+  const lastRightCoupon = useAppSelector(getLastCorrectCoupon);
+  const productsPrice = products.reduce((total, currentValue) => total + (currentValue.price * currentValue.count), 0);
+  const discountPrice = Math.floor(productsPrice * discount / 100);
+  const totalPrice = productsPrice - discountPrice;
+
+
+  const handleCouponSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    dispatch(checkCouponValueAction({
+      coupon,
+      onSuccess: () => {
+        setPromoColor('Green');
+      },
+      onFail: () => {
+        setPromoColor('Red');
+      },
+    }));
+  };
+
+  const handleCouponChange = ({ target }: InputHandler) => {
+    setCoupon(target.value);
+    if (target.value.includes(' ')) {
+      setCoupon(target.value.replace(' ', ''));
+    }
+  };
+
+  const handleBuyButtonClick = () => {
+    dispatch(postNewOrderAction({
+      camerasIds: products.map((product) => product.id),
+      coupon: lastRightCoupon,
+      onSuccess: () => {
+        document.body.classList.add('scroll-lock');
+        dispatch(cleanCart());
+        setModalSuccess(true);
+        setPromoColor('');
+        setCoupon('');
+      },
+    }));
+  };
+
+  const handleCloseButtonClick = () => {
+    document.body.classList.remove('scroll-lock');
+    setModalSuccess(false);
+  };
 
   return (
     <div className="wrapper">
@@ -51,14 +112,16 @@ function BasketPage(): JSX.Element {
                     Если у вас есть промокод на скидку, примените его в этом поле
                   </p>
                   <div className="basket-form">
-                    <form action="#">
-                      <div className="custom-input">
+                    <form action="#" onSubmit={handleCouponSubmit}>
+                      <div className={promoLabelClassName}>
                         <label>
                           <span className="custom-input__label">Промокод</span>
                           <input
                             type="text"
                             name="promo"
                             placeholder="Введите промокод"
+                            value={coupon}
+                            onChange={handleCouponChange}
                           />
                         </label>
                         <p className="custom-input__error">Промокод неверный</p>
@@ -73,12 +136,12 @@ function BasketPage(): JSX.Element {
                 <div className="basket__summary-order">
                   <p className="basket__summary-item">
                     <span className="basket__summary-text">Всего:</span>
-                    <span className="basket__summary-value">111 390 ₽</span>
+                    <span className="basket__summary-value">{productsPrice.toLocaleString()} ₽</span>
                   </p>
                   <p className="basket__summary-item">
                     <span className="basket__summary-text">Скидка:</span>
                     <span className="basket__summary-value basket__summary-value--bonus">
-                      0 ₽
+                      {discountPrice.toLocaleString()} ₽
                     </span>
                   </p>
                   <p className="basket__summary-item">
@@ -86,10 +149,15 @@ function BasketPage(): JSX.Element {
                       К оплате:
                     </span>
                     <span className="basket__summary-value basket__summary-value--total">
-                      111 390 ₽
+                      {totalPrice.toLocaleString()} ₽
                     </span>
                   </p>
-                  <button className="btn btn--purple" type="submit">
+                  <button
+                    className="btn btn--purple"
+                    type="submit"
+                    disabled={products.length === 0}
+                    onClick={handleBuyButtonClick}
+                  >
                     Оформить заказ
                   </button>
                 </div>
@@ -98,6 +166,10 @@ function BasketPage(): JSX.Element {
           </section>
         </div>
       </main>
+      {
+        modalSuccess &&
+        <ModalBuy onCloseButtonClick={handleCloseButtonClick} />
+      }
       <Footer />
     </div>
   );

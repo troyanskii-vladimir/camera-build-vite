@@ -21,6 +21,8 @@ export enum APIRoute {
   Promo = '/promo',
   Similar = '/similar',
   Reviews = '/reviews',
+  Coupons = '/coupons',
+  Orders = '/orders',
 }
 
 export enum ReducerNames {

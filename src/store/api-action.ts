@@ -6,6 +6,9 @@ import { APIRoute } from '../config';
 import { Comment, Review } from '../types/review';
 import { loadProductData, loadProducts, loadPromoProducts, loadSimilarProducts, setProductsLoading } from './product-data/actions';
 import { createNewComment, loadProductReview, setNewCommentPending } from './reviews-data/actions';
+import { Coupon } from '../types/coupon';
+import { changeDiscount, setCouponPending, setLastCorrectCoupon } from './cart-data/actions';
+import { Order } from '../types/order';
 
 
 export const fetchProductsAction = createAsyncThunk<void, undefined, {
@@ -99,5 +102,47 @@ export const postNewCommentAction = createAsyncThunk<void, Comment & {onSuccess:
     const {data} = response;
     dispatch(setNewCommentPending(false));
     dispatch(createNewComment(data));
+  }
+  );
+
+
+export const checkCouponValueAction = createAsyncThunk<void, Coupon & {onSuccess: () => void} & {onFail: () => void}, {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+}>(
+  'checkCouponValue',
+  async (param, {dispatch, extra: api}) => {
+    const {coupon, onSuccess, onFail} = param;
+    dispatch(setCouponPending(true));
+
+    dispatch(changeDiscount(0));
+    onFail();
+    dispatch(setLastCorrectCoupon(null));
+
+    const response = await api.post<number>(APIRoute.Coupons, { coupon });
+    const {data} = response;
+    if (response.status === 200) {
+      onSuccess();
+      dispatch(changeDiscount(data));
+      dispatch(setLastCorrectCoupon(coupon));
+    }
+    dispatch(setCouponPending(false));
+  }
+  );
+
+
+export const postNewOrderAction = createAsyncThunk<void, Order & {onSuccess: () => void}, {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+}>(
+  'postNewOrder',
+  async (param, {extra: api}) => {
+    const {camerasIds, coupon, onSuccess} = param;
+    const response = await api.post<number>(APIRoute.Orders, { camerasIds, coupon });
+    if (response.status === 201) {
+      onSuccess();
+    }
   }
   );
