@@ -1,5 +1,6 @@
 import { useAppSelector } from '../../hooks';
 import { getProductsLoadingStatus } from '../../store/product-data/selectors';
+import { ProductCart } from '../../types/cart';
 import { Product } from '../../types/product';
 import CatalogCardItem from '../catalog-card-item/catalog-card-item';
 import Loader from '../loader/loader';
@@ -7,10 +8,11 @@ import Loader from '../loader/loader';
 
 type CatalogCardsListProps = {
   products: Product[];
+  productsInCart: ProductCart[];
   onAddButtonClick: (product: Product) => void;
 }
 
-function CatalogCardsList({products, onAddButtonClick}: CatalogCardsListProps): JSX.Element {
+function CatalogCardsList({products, productsInCart, onAddButtonClick}: CatalogCardsListProps): JSX.Element {
   const isProductsLoading = useAppSelector(getProductsLoadingStatus);
 
   if (isProductsLoading) {
@@ -28,6 +30,7 @@ function CatalogCardsList({products, onAddButtonClick}: CatalogCardsListProps): 
           <CatalogCardItem
             key={product.id}
             product={product}
+            productsInCart={productsInCart}
             onAddButtonClick={onAddButtonClick}
           />
         ))

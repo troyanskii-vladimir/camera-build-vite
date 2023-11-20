@@ -16,11 +16,13 @@ import browserHistory from '../../browser-history';
 import { useSearchParams } from 'react-router-dom';
 import { sortPointsByPriceToLow, sortPointsByPriceToTop, sortPointsByRatingToLow, sortPointsByRatingToTop } from '../../utils/utils';
 import ModalSuccessAdd from '../../componets/modal-success-add/modal-success-add';
+import { getProductsCart } from '../../store/cart-data/selectors';
 
 
 function MainPage(): JSX.Element {
   const products = useAppSelector(getProducts);
   const promoProducts = useAppSelector(getPromoProducts);
+  const productsInCart = useAppSelector(getProductsCart);
 
 
   const [searchParams] = useSearchParams();
@@ -437,7 +439,7 @@ function MainPage(): JSX.Element {
                     onChangeSortTypeCLick={handleChangeSortTypeClick}
                     onChangeSortOrderCLick={handleChangeSortOrderClick}
                   />
-                  <CatalogCardsList products={currentProducts} onAddButtonClick={handleAddButtonClick} />
+                  <CatalogCardsList products={currentProducts} productsInCart={productsInCart} onAddButtonClick={handleAddButtonClick} />
                   {
                     Math.ceil(products.length / DISPLAYED_PRODUCTS) > 1 &&
                     <Pagination

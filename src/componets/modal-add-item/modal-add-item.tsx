@@ -2,7 +2,7 @@ import { MutableRefObject, useRef } from 'react';
 import { Product } from '../../types/product';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import FocusTrap from 'focus-trap-react';
-import { addNewProduct } from '../../store/cart-data/actions';
+import { addNewProduct, changeProduct } from '../../store/cart-data/actions';
 import { useAppDispatch } from '../../hooks';
 import { ProductCart } from '../../types/cart';
 
@@ -11,9 +11,10 @@ type ModalAddItemProps = {
   product: Product;
   onCloseButtonClick: () => void;
   onSuccessAddButtonClick: () => void;
+  countOfProductInCart?: number;
 }
 
-function ModalAddItem({product, onCloseButtonClick, onSuccessAddButtonClick}: ModalAddItemProps): JSX.Element {
+function ModalAddItem({product, onCloseButtonClick, onSuccessAddButtonClick, countOfProductInCart = 0}: ModalAddItemProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const handleCloseButtonClick = (): void => {
@@ -22,7 +23,7 @@ function ModalAddItem({product, onCloseButtonClick, onSuccessAddButtonClick}: Mo
 
   const cartProduct: ProductCart = {
     ...product,
-    count: 1,
+    count: countOfProductInCart + 1,
   };
 
   const ref: MutableRefObject<null> = useDetectClickOutside({
@@ -80,7 +81,11 @@ function ModalAddItem({product, onCloseButtonClick, onSuccessAddButtonClick}: Mo
                 onClick={(evt) => {
                   evt.preventDefault();
                   evt.stopPropagation();
-                  dispatch(addNewProduct(cartProduct));
+                  if (countOfProductInCart === 0) {
+                    dispatch(addNewProduct(cartProduct));
+                  } else {
+                    dispatch(changeProduct(cartProduct));
+                  }
                   onCloseButtonClick();
                   onSuccessAddButtonClick();
                 }}

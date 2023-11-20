@@ -1,19 +1,24 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../../types/product';
 import { AppRoute, COUNT_OF_RATING_STARS } from '../../config';
+import { ProductCart } from '../../types/cart';
+import browserHistory from '../../browser-history';
 
 
 type CatalogCardItemProps = {
   product: Product;
+  productsInCart: ProductCart[];
   onAddButtonClick: (product: Product) => void;
 }
 
-function CatalogCardItem({product, onAddButtonClick}: CatalogCardItemProps): JSX.Element {
+function CatalogCardItem({product, productsInCart, onAddButtonClick}: CatalogCardItemProps): JSX.Element {
   const ratingArray = Array.from({ length: COUNT_OF_RATING_STARS }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const handleAddButtonClick = (): void => {
     onAddButtonClick(product);
   };
+
+  const isAddedCart = productsInCart?.find((prod) => prod.id === product.id);
 
   return (
     <div className='product-card is-active'>
@@ -54,17 +59,35 @@ function CatalogCardItem({product, onAddButtonClick}: CatalogCardItemProps): JSX
         </p>
       </div>
       <div className="product-card__buttons">
-        <button
-          className="btn btn--purple product-card__btn"
-          type="button"
-          onClick={(evt) => {
-            evt.preventDefault();
-            evt.stopPropagation();
-            handleAddButtonClick();
-          }}
-        >
-          Купить
-        </button>
+        {
+          !isAddedCart &&
+            <button
+              className="btn btn--purple product-card__btn"
+              type="button"
+              onClick={(evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                handleAddButtonClick();
+              }}
+            >
+              Купить
+            </button>
+        }
+        {
+          isAddedCart &&
+            <button
+              className="btn btn--purple-border product-card__btn product-card__btn--in-cart"
+              type="button"
+              onClick={() => {
+                browserHistory.replace(AppRoute.Cart);
+              }}
+            >
+              <svg width={16} height={16} aria-hidden="true">
+                <use xlinkHref="#icon-basket" />
+              </svg>
+              В корзине
+            </button>
+        }
         <Link className="btn btn--transparent" to={`${AppRoute.Product}/${product.id}`}>
           Подробнее
         </Link>

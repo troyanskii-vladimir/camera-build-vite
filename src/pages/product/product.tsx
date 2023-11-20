@@ -17,6 +17,7 @@ import { getProductData, getProductsLoadingStatus, getSimilarProducts } from '..
 import { getReviews } from '../../store/reviews-data/selectors';
 import Loader from '../../componets/loader/loader';
 import ModalSuccessAdd from '../../componets/modal-success-add/modal-success-add';
+import { getProductsCart } from '../../store/cart-data/selectors';
 
 
 enum Tabs {
@@ -34,6 +35,7 @@ function ProductPage(): JSX.Element {
   const similarProducts = useAppSelector(getSimilarProducts);
   const reviews = useAppSelector(getReviews);
   const isProductDataLoading = useAppSelector(getProductsLoadingStatus);
+  const productsInCart = useAppSelector(getProductsCart);
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const [modalData, setModalData] = useState<Product | null>(null);
@@ -51,6 +53,8 @@ function ProductPage(): JSX.Element {
     }
 
   }, [dispatch, id, product]);
+
+  const countOfProductInCart = productsInCart.find((prod) => prod.id === product.id)?.count || 0;
 
   const location = useLocation();
   const tabsType = location.search.slice(6, 10) as Tabs || Tabs.Char;
@@ -255,7 +259,12 @@ function ProductPage(): JSX.Element {
         </div>
         {
           modalData &&
-          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} onSuccessAddButtonClick={handleSuccessAddButtonClick} />
+          <ModalAddItem
+            product={modalData}
+            onCloseButtonClick={handleCloseButtonClick}
+            onSuccessAddButtonClick={handleSuccessAddButtonClick}
+            countOfProductInCart={countOfProductInCart}
+          />
         }
         {
           modalSuccessAdd &&
