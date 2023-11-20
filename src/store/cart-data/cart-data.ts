@@ -14,6 +14,6 @@ const initialState: InitialState = {
 export const CartData = createReducer(initialState, (builder) => {
   builder
     .addCase(addNewProduct, (state, action) => {
-      state.products = action.payload;
+      state.products.push(action.payload);
     });
 });

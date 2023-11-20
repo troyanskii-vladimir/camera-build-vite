@@ -15,6 +15,7 @@ import { FilterCamera, FilterLevel, FilterType, SortOrder, SortType } from '../.
 import browserHistory from '../../browser-history';
 import { useSearchParams } from 'react-router-dom';
 import { sortPointsByPriceToLow, sortPointsByPriceToTop, sortPointsByRatingToLow, sortPointsByRatingToTop } from '../../utils/utils';
+import ModalSuccessAdd from '../../componets/modal-success-add/modal-success-add';
 
 
 function MainPage(): JSX.Element {
@@ -35,6 +36,7 @@ function MainPage(): JSX.Element {
   const typeLevel = searchParams.getAll('typeLevel') as FilterLevel[] || [];
 
   const [modalData, setModalData] = useState<Product | null>(null);
+  const [modalSuccessAdd, setModalSuccessAdd] = useState<boolean>(false);
 
   const [filterdProducts, setFilteredProducts] = useState<Product[]>(products);
   const [filterdPriceProducts, setFilteredPriceProducts] = useState<Product[]>(products);
@@ -370,9 +372,19 @@ function MainPage(): JSX.Element {
     setModalData(product);
   };
 
+  const handleSuccessAddButtonClick = (): void => {
+    document.body.classList.add('scroll-lock');
+    setModalSuccessAdd(true);
+  };
+
   const handleCloseButtonClick = (): void => {
     document.body.classList.remove('scroll-lock');
     setModalData(null);
+  };
+
+  const handleSuccessAddCloseButtonClick = (): void => {
+    document.body.classList.remove('scroll-lock');
+    setModalSuccessAdd(false);
   };
 
   return (
@@ -441,7 +453,11 @@ function MainPage(): JSX.Element {
         </div>
         {
           modalData &&
-          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} />
+          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} onSuccessAddButtonClick={handleSuccessAddButtonClick} />
+        }
+        {
+          modalSuccessAdd &&
+          <ModalSuccessAdd onCloseButtonClick={handleSuccessAddCloseButtonClick} />
         }
       </main>
       <Footer />

@@ -2,17 +2,27 @@ import { MutableRefObject, useRef } from 'react';
 import { Product } from '../../types/product';
 import { useDetectClickOutside } from 'react-detect-click-outside';
 import FocusTrap from 'focus-trap-react';
+import { addNewProduct } from '../../store/cart-data/actions';
+import { useAppDispatch } from '../../hooks';
+import { ProductCart } from '../../types/cart';
 
 
 type ModalAddItemProps = {
   product: Product;
   onCloseButtonClick: () => void;
+  onSuccessAddButtonClick: () => void;
 }
 
-function ModalAddItem({product, onCloseButtonClick}: ModalAddItemProps): JSX.Element {
+function ModalAddItem({product, onCloseButtonClick, onSuccessAddButtonClick}: ModalAddItemProps): JSX.Element {
+  const dispatch = useAppDispatch();
 
   const handleCloseButtonClick = (): void => {
     onCloseButtonClick();
+  };
+
+  const cartProduct: ProductCart = {
+    ...product,
+    count: 1,
   };
 
   const ref: MutableRefObject<null> = useDetectClickOutside({
@@ -67,6 +77,13 @@ function ModalAddItem({product, onCloseButtonClick}: ModalAddItemProps): JSX.Ele
               <button
                 className="btn btn--purple modal__btn modal__btn--fit-width"
                 type="button"
+                onClick={(evt) => {
+                  evt.preventDefault();
+                  evt.stopPropagation();
+                  dispatch(addNewProduct(cartProduct));
+                  onCloseButtonClick();
+                  onSuccessAddButtonClick();
+                }}
               >
                 <svg width={24} height={16} aria-hidden="true">
                   <use xlinkHref="#icon-add-basket" />
