@@ -7,6 +7,8 @@ export const DISPLAYED_PRODUCTS = 9;
 export const COUNT_OF_RATING_STARS = 5;
 export const BACKEND_URL = 'https://camera-shop.accelerator.pages.academy';
 export const REQUEST_TIMEOUT = 5000;
+export const MIN_COUNT_OF_PRODUCT_IN_BASKET = 1;
+export const MAX_COUNT_OF_PRODUCT_IN_BASKET = 99;
 
 export enum AppRoute {
   Catalog = '/',

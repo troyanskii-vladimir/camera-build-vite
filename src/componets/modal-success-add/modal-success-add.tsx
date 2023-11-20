@@ -49,6 +49,7 @@ function ModalSuccessAdd({onCloseButtonClick, layout}: ModalSuccessAddProps): JS
               <button
                 className="btn btn--purple modal__btn modal__btn--fit-width"
                 onClick={() => {
+                  onCloseButtonClick();
                   browserHistory.replace(AppRoute.Cart);
                 }}
               >

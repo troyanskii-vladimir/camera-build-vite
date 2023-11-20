@@ -4,6 +4,7 @@ import { useAppSelector } from '../../hooks';
 import { getProductData, getProducts } from '../../store/product-data/selectors';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Product } from '../../types/product';
+import { getProductsCart } from '../../store/cart-data/selectors';
 
 
 type SearchHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -12,6 +13,8 @@ type SearchHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 function Header(): JSX.Element {
   const products = useAppSelector(getProducts);
   const productId = useAppSelector(getProductData).id;
+  const cartProducts = useAppSelector(getProductsCart);
+  const cartProductsCount = cartProducts.reduce((totalCount, currentValue) => totalCount + currentValue.count, 0);
 
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -158,11 +161,15 @@ function Header(): JSX.Element {
             <span className="visually-hidden">Сбросить поиск</span>
           </button>
         </div>
-        <a className="header__basket-link" href="#">
+        <Link className="header__basket-link" to={AppRoute.Cart}>
           <svg width={16} height={16} aria-hidden="true">
             <use xlinkHref="#icon-basket" />
           </svg>
-        </a>
+          {
+            cartProductsCount > 0 &&
+            <span className="header__basket-count">{cartProductsCount}</span>
+          }
+        </Link>
       </div>
     </header>
   );
