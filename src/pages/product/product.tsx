@@ -16,6 +16,7 @@ import ModalSuccessReview from '../../componets/modal-success-review/modal-succe
 import { getProductData, getProductsLoadingStatus, getSimilarProducts } from '../../store/product-data/selectors';
 import { getReviews } from '../../store/reviews-data/selectors';
 import Loader from '../../componets/loader/loader';
+import ModalSuccessAdd from '../../componets/modal-success-add/modal-success-add';
 
 
 enum Tabs {
@@ -36,6 +37,7 @@ function ProductPage(): JSX.Element {
   const ratingArray = Array.from({ length: 5 }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const [modalData, setModalData] = useState<Product | null>(null);
+  const [modalSuccessAdd, setModalSuccessAdd] = useState<boolean>(false);
   const [modalReviewActive, setModalReviewActive] = useState<boolean>(false);
   const [modalSuccessReview, setModalSuccessReview] = useState<boolean>(false);
 
@@ -72,11 +74,21 @@ function ProductPage(): JSX.Element {
     setModalData(prod);
   };
 
+  const handleSuccessAddButtonClick = (): void => {
+    document.body.classList.add('scroll-lock');
+    setModalSuccessAdd(true);
+  };
+
   const handleCloseButtonClick = (): void => {
     document.body.classList.remove('scroll-lock');
     setModalData(null);
     setModalReviewActive(false);
     setModalSuccessReview(false);
+  };
+
+  const handleSuccessAddCloseButtonClick = (): void => {
+    document.body.classList.remove('scroll-lock');
+    setModalSuccessAdd(false);
   };
 
   const handleCreateReviewButtonClick = (): void => {
@@ -243,7 +255,11 @@ function ProductPage(): JSX.Element {
         </div>
         {
           modalData &&
-          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} />
+          <ModalAddItem product={modalData} onCloseButtonClick={handleCloseButtonClick} onSuccessAddButtonClick={handleSuccessAddButtonClick} />
+        }
+        {
+          modalSuccessAdd &&
+          <ModalSuccessAdd onCloseButtonClick={handleSuccessAddCloseButtonClick} layout='product' />
         }
         {
           modalReviewActive &&

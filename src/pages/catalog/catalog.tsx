@@ -457,7 +457,7 @@ function MainPage(): JSX.Element {
         }
         {
           modalSuccessAdd &&
-          <ModalSuccessAdd onCloseButtonClick={handleSuccessAddCloseButtonClick} />
+          <ModalSuccessAdd onCloseButtonClick={handleSuccessAddCloseButtonClick} layout='catalog' />
         }
       </main>
       <Footer />

@@ -7,11 +7,19 @@ import { AppRoute } from '../../config';
 
 type ModalSuccessAddProps = {
   onCloseButtonClick: () => void;
+  layout: 'catalog' | 'product';
 }
 
-function ModalSuccessAdd({onCloseButtonClick}: ModalSuccessAddProps): JSX.Element {
+function ModalSuccessAdd({onCloseButtonClick, layout}: ModalSuccessAddProps): JSX.Element {
   const handleSuccessAddCloseButtonClick = (): void => {
     onCloseButtonClick();
+  };
+
+  const handleReturnToByingButtonClick = (): void => {
+    onCloseButtonClick();
+    if (layout === 'product') {
+      browserHistory.replace(AppRoute.Catalog);
+    }
   };
 
   const ref: MutableRefObject<null> = useDetectClickOutside({
@@ -35,7 +43,7 @@ function ModalSuccessAdd({onCloseButtonClick}: ModalSuccessAddProps): JSX.Elemen
               <use xlinkHref="#icon-success" />
             </svg>
             <div className="modal__buttons">
-              <button className="btn btn--transparent modal__btn" onClick={handleSuccessAddCloseButtonClick}>
+              <button className="btn btn--transparent modal__btn" onClick={handleReturnToByingButtonClick}>
                 Продолжить покупки
               </button>
               <button
