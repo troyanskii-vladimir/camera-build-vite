@@ -24,4 +24,5 @@ export enum APIRoute {
 export enum ReducerNames {
   ProductData = 'ProductData',
   ReviewsData = 'ReviewsData',
+  CartData = 'CartData',
 }
