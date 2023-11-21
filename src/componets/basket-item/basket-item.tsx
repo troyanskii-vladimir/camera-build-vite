@@ -1,15 +1,16 @@
 import { MAX_COUNT_OF_PRODUCT_IN_BASKET, MIN_COUNT_OF_PRODUCT_IN_BASKET } from '../../config';
 import { useAppDispatch } from '../../hooks';
-import { changeProduct, deleteProduct } from '../../store/cart-data/actions';
+import { changeProduct } from '../../store/cart-data/actions';
 import { ProductCart } from '../../types/cart';
 
 
 type BasketItemProps = {
   product: ProductCart;
+  onDeleteButtonClick: (prod: ProductCart) => void;
 }
 
 
-function BasketItem({product}: BasketItemProps):JSX.Element {
+function BasketItem({product, onDeleteButtonClick}: BasketItemProps):JSX.Element {
   const dispatch = useAppDispatch();
 
   const handleDeleteCountButtonClick = () => {
@@ -32,9 +33,6 @@ function BasketItem({product}: BasketItemProps):JSX.Element {
     }));
   };
 
-  const handleDeleteButtonClick = () => {
-    dispatch(deleteProduct(product));
-  };
 
   return (
     <>
@@ -113,7 +111,11 @@ function BasketItem({product}: BasketItemProps):JSX.Element {
         className="cross-btn"
         type="button"
         aria-label="Удалить товар"
-        onClick={handleDeleteButtonClick}
+        onClick={(evt) => {
+          evt.preventDefault();
+          evt.stopPropagation();
+          onDeleteButtonClick(product);
+        }}
       >
         <svg width={10} height={10} aria-hidden="true">
           <use xlinkHref="#icon-close" />

@@ -9,6 +9,8 @@ import { useEffect } from 'react';
 import { fetchProductsAction, fetchPromoProductsAction } from '../../store/api-action';
 import { useAppDispatch } from '../../hooks';
 import ScrollToTop from '../scroll-to-top/scroll-to-top';
+import { addProductsToCart } from '../../store/cart-data/actions';
+import { getCartData } from '../../services/local-cart';
 
 
 function App(): JSX.Element {
@@ -17,6 +19,7 @@ function App(): JSX.Element {
   useEffect(() => {
     dispatch(fetchProductsAction());
     dispatch(fetchPromoProductsAction());
+    dispatch(addProductsToCart(getCartData()));
   }, [dispatch]);
 
 

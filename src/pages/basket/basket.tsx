@@ -9,6 +9,8 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { checkCouponValueAction, postNewOrderAction } from '../../store/api-action';
 import ModalBuy from '../../componets/modal-buy.tsx/modal-buy';
 import { cleanCart } from '../../store/cart-data/actions';
+import ModalDelete from '../../componets/modal-delete/modal-delete';
+import { ProductCart } from '../../types/cart';
 
 
 type InputHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
@@ -16,9 +18,10 @@ type InputHandler = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 function BasketPage(): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const [coupon, setCoupon] = useState<string>('');
-  const [promoColor, setPromoColor] = useState<string>('');
+  const [coupon, setCoupon] = useState<string | null>(useAppSelector(getLastCorrectCoupon));
+  const [promoColor, setPromoColor] = useState<string>(useAppSelector(getLastCorrectCoupon) !== null ? 'Green' : '');
   const [modalSuccess, setModalSuccess] = useState<boolean>(false);
+  const [modalDeleteProduct, setModalDeleteProduct] = useState<ProductCart | null>(null);
 
   const promoLabelClassName = `custom-input ${promoColor === 'Green' ? 'is-valid' : ''}${promoColor === 'Red' ? 'is-invalid' : ''}`;
 
@@ -68,6 +71,12 @@ function BasketPage(): JSX.Element {
   const handleCloseButtonClick = () => {
     document.body.classList.remove('scroll-lock');
     setModalSuccess(false);
+    setModalDeleteProduct(null);
+  };
+
+  const handleDeleteButtonClick = (prod: ProductCart) => {
+    document.body.classList.add('scroll-lock');
+    setModalDeleteProduct(prod);
   };
 
   return (
@@ -105,7 +114,7 @@ function BasketPage(): JSX.Element {
           <section className="basket">
             <div className="container">
               <h1 className="title title--h2">Корзина</h1>
-              <BasketList products={products} />
+              <BasketList products={products} onDeleteButtonClick={handleDeleteButtonClick} />
               <div className="basket__summary">
                 <div className="basket__promo">
                   <p className="title title--h4">
@@ -120,7 +129,7 @@ function BasketPage(): JSX.Element {
                             type="text"
                             name="promo"
                             placeholder="Введите промокод"
-                            value={coupon}
+                            value={coupon !== null ? coupon : ''}
                             onChange={handleCouponChange}
                           />
                         </label>
@@ -169,6 +178,10 @@ function BasketPage(): JSX.Element {
       {
         modalSuccess &&
         <ModalBuy onCloseButtonClick={handleCloseButtonClick} />
+      }
+      {
+        modalDeleteProduct &&
+        <ModalDelete product={modalDeleteProduct} onCloseButtonClick={handleCloseButtonClick} />
       }
       <Footer />
     </div>
