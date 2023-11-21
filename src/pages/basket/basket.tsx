@@ -25,13 +25,14 @@ function BasketPage(): JSX.Element {
 
   const promoLabelClassName = `custom-input ${promoColor === 'Green' ? 'is-valid' : ''}${promoColor === 'Red' ? 'is-invalid' : ''}`;
 
-
   const products = useAppSelector(getProductsCart);
   const discount = useAppSelector(getDiscount);
   const lastRightCoupon = useAppSelector(getLastCorrectCoupon);
   const productsPrice = products.reduce((total, currentValue) => total + (currentValue.price * currentValue.count), 0);
   const discountPrice = Math.floor(productsPrice * discount / 100);
   const totalPrice = productsPrice - discountPrice;
+
+  const discountTotalClassName = `basket__summary-value ${discount ? 'basket__summary-value--bonus' : ''}`;
 
 
   const handleCouponSubmit = (evt: FormEvent<HTMLFormElement>) => {
@@ -149,7 +150,7 @@ function BasketPage(): JSX.Element {
                   </p>
                   <p className="basket__summary-item">
                     <span className="basket__summary-text">Скидка:</span>
-                    <span className="basket__summary-value basket__summary-value--bonus">
+                    <span className={discountTotalClassName}>
                       {discountPrice.toLocaleString()} ₽
                     </span>
                   </p>
