@@ -63,7 +63,7 @@ function ModalDelete({product, onCloseButtonClick}: ModalDeleteProps): JSX.Eleme
                     <span className="basket-item__article">Артикул:</span>{' '}
                     <span className="basket-item__number">{product.vendorCode}</span>
                   </li>
-                  <li className="basket-item__list-item">{`${product.type} ${product.category}`}</li>
+                  <li className="basket-item__list-item">{`${product.type} ${product.category === 'Фотоаппарат' ? 'фото' : 'видео'}камера`}</li>
                   <li className="basket-item__list-item">{`${product.level} уровень`}</li>
                 </ul>
               </div>

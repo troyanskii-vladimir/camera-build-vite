@@ -59,7 +59,7 @@ function BasketItem({product, onDeleteButtonClick}: BasketItemProps):JSX.Element
             <span className="basket-item__number">{product.vendorCode}</span>
           </li>
           <li className="basket-item__list-item">
-            {`${product.type} ${product.category}`}
+            {`${product.type} ${product.category === 'Фотоаппарат' ? 'фото' : 'видео'}камера`}
           </li>
           <li className="basket-item__list-item">
             {`${product.level} уровень`}
