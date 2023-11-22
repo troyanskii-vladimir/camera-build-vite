@@ -7,11 +7,11 @@ import browserHistory from '../../browser-history';
 
 type CatalogCardItemProps = {
   product: Product;
-  productsInCart: ProductCart[];
+  productsInCart?: ProductCart[];
   onAddButtonClick: (product: Product) => void;
 }
 
-function CatalogCardItem({product, productsInCart, onAddButtonClick}: CatalogCardItemProps): JSX.Element {
+function CatalogCardItem({product, productsInCart = [], onAddButtonClick}: CatalogCardItemProps): JSX.Element {
   const ratingArray = Array.from({ length: COUNT_OF_RATING_STARS }, (_e, i) => (i < product.rating) ? {class: 'full-', i} : {class: '', i});
 
   const handleAddButtonClick = (): void => {
