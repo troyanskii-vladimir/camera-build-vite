@@ -1,14 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import ModalAddItem from './modal-add-item';
-import { withHistory } from '../../utils/mock-component';
-import { makeFakeProduct } from '../../utils/mocks';
+import { withHistory, withStore } from '../../utils/mock-component';
+import { makeFakeProduct, makeFakeStore } from '../../utils/mocks';
 
 
 describe('Component: ModalAddItem', () => {
   it('should render correctly', () => {
     const fakeProduct = makeFakeProduct();
     const expectedText = fakeProduct.name;
-    const preparedComponent = withHistory(<ModalAddItem product={fakeProduct} onCloseButtonClick={() => (null)} />);
+    const { withStoreComponent } = withStore(<ModalAddItem product={fakeProduct} onCloseButtonClick={() => (null)} onSuccessAddButtonClick={() => null} />, makeFakeStore());
+    const preparedComponent = withHistory(withStoreComponent);
 
     render(preparedComponent);
 

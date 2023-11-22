@@ -19,6 +19,12 @@ describe('Product data selectors', () => {
       productReviews: mockReviews,
       newCommentPending: false,
     },
+    [ReducerNames.CartData]: {
+      products: [],
+      isCouponChecking: false,
+      lastRightCoupon: null,
+      discount: 0,
+    },
   };
 
   it('should return product reviews from state', () => {

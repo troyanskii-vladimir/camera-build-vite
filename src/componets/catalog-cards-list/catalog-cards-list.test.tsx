@@ -1,16 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import CatalogCardsList from './catalog-cards-list';
 import { withHistory, withStore } from '../../utils/mock-component';
-import { makeFakeProduct, makeFakeStore } from '../../utils/mocks';
+import { makeFakeCartProduct, makeFakeProduct, makeFakeStore } from '../../utils/mocks';
 import { ReducerNames } from '../../config';
 
 
 describe('Component: CatalogCardsList', () => {
   const fakeProducts = [makeFakeProduct(), makeFakeProduct()];
+  const fakeCartProducts = [makeFakeCartProduct(), makeFakeCartProduct()];
 
   it('should render correctly with products', () => {
     const expectedText = fakeProducts[0].name;
-    const withHistoryComponent = withHistory(<CatalogCardsList products={fakeProducts} onAddButtonClick={() => (null)} />);
+    const withHistoryComponent = withHistory(<CatalogCardsList products={fakeProducts} productsInCart={fakeCartProducts} onAddButtonClick={() => (null)} />);
     const { withStoreComponent } = withStore(withHistoryComponent, makeFakeStore({
       [ReducerNames.ProductData]: {
         products: [],
@@ -28,7 +29,7 @@ describe('Component: CatalogCardsList', () => {
 
   it('should render correctly when products loading', () => {
     const expectedText = /Загрузка/i;
-    const withHistoryComponent = withHistory(<CatalogCardsList products={fakeProducts} onAddButtonClick={() => (null)} />);
+    const withHistoryComponent = withHistory(<CatalogCardsList products={fakeProducts} productsInCart={fakeCartProducts} onAddButtonClick={() => (null)} />);
     const { withStoreComponent } = withStore(withHistoryComponent, makeFakeStore({
       [ReducerNames.ProductData]: {
         products: [],
@@ -46,7 +47,7 @@ describe('Component: CatalogCardsList', () => {
 
   it('should render correctly with empty products', () => {
     const expectedText = /ничего не найдено/i;
-    const withHistoryComponent = withHistory(<CatalogCardsList products={[]} onAddButtonClick={() => (null)} />);
+    const withHistoryComponent = withHistory(<CatalogCardsList products={[]} productsInCart={fakeCartProducts} onAddButtonClick={() => (null)} />);
     const { withStoreComponent } = withStore(withHistoryComponent, makeFakeStore({
       [ReducerNames.ProductData]: {
         products: [],

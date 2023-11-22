@@ -49,6 +49,7 @@ export const CartData = createReducer(initialState, (builder) => {
     .addCase(cleanCart, (state) => {
       state.products = [];
       state.discount = 0;
+      state.lastRightCoupon = null;
       dropCartData();
     });
 });

@@ -17,12 +17,19 @@ describe('App Routing', () => {
 
   it('should render catalog page when user navigate to "/" route', () => {
     const fakeProducts = [makeFakeProduct(), makeFakeProduct()];
+    const fakeCartProducts = [{...makeFakeProduct(), count: 2}, {...makeFakeProduct(), count: 3}];
     const { withStoreComponent } = withStore(<App />, makeFakeStore({ [ReducerNames.ProductData]: {
       products: fakeProducts,
       promoProducts: [makeFakePromoProduct()],
       isProductsLoading: false,
       productData: {} as Product,
       similarProducts: [],
+    },
+    [ReducerNames.CartData]: {
+      products: fakeCartProducts,
+      isCouponChecking: false,
+      lastRightCoupon: null,
+      discount: 0,
     }}));
     const withHistoryComponent = withHistory(withStoreComponent, mockHistory);
     mockHistory.push(AppRoute.Catalog);
@@ -35,8 +42,9 @@ describe('App Routing', () => {
   });
 
 
-  it('should render product page when user navigate to "/" route', () => {
+  it('should render product page when user navigate to "/product/:id" route', () => {
     const fakeProduct = makeFakeProduct();
+    const fakeCartProducts = [{...makeFakeProduct(), count: 2}, {...makeFakeProduct(), count: 3}];
     const { withStoreComponent } = withStore(<App />, makeFakeStore({
       [ReducerNames.ProductData]: {
         products: [makeFakeProduct(), fakeProduct],
@@ -44,6 +52,12 @@ describe('App Routing', () => {
         isProductsLoading: false,
         productData: fakeProduct,
         similarProducts: [makeFakeProduct()],
+      },
+      [ReducerNames.CartData]: {
+        products: fakeCartProducts,
+        isCouponChecking: false,
+        lastRightCoupon: null,
+        discount: 0,
       },
       [ReducerNames.ReviewsData]: {
         productReviews: [makeFakeReview()],
@@ -61,6 +75,35 @@ describe('App Routing', () => {
 
     expect(screen.getByText(expectedText)).toBeInTheDocument();
     expect(getByText(fakeProduct.name)).toBeInTheDocument();
+  });
+
+
+  it('should render basket page when user navigate to "/cart" route', () => {
+    const fakeProduct = makeFakeProduct();
+    const fakeCartProducts = [{...makeFakeProduct(), count: 2}, {...makeFakeProduct(), count: 3}];
+    const { withStoreComponent } = withStore(<App />, makeFakeStore({
+      [ReducerNames.ProductData]: {
+        products: [makeFakeProduct(), fakeProduct],
+        promoProducts: [makeFakePromoProduct()],
+        isProductsLoading: false,
+        productData: fakeProduct,
+        similarProducts: [makeFakeProduct()],
+      },
+      [ReducerNames.CartData]: {
+        products: fakeCartProducts,
+        isCouponChecking: false,
+        lastRightCoupon: null,
+        discount: 0,
+      }
+    }));
+    const withHistoryComponent = withHistory(withStoreComponent, mockHistory);
+    mockHistory.push(AppRoute.Cart);
+    const expectedText = 'Если у вас есть промокод на скидку, примените его в этом поле';
+
+    render(withHistoryComponent);
+
+    expect(screen.getByText(expectedText)).toBeInTheDocument();
+    expect(screen.getByText(fakeCartProducts[0].name)).toBeInTheDocument();
   });
 
 

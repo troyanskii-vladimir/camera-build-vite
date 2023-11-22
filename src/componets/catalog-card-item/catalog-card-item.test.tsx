@@ -1,14 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import CatalogCardItem from './catalog-card-item';
 import { withHistory } from '../../utils/mock-component';
-import { makeFakeProduct } from '../../utils/mocks';
+import { makeFakeCartProduct, makeFakeProduct } from '../../utils/mocks';
 
 
 describe('Component: CatalogCardItem', () => {
   it('should render correctly', () => {
     const fakeProduct = makeFakeProduct();
+    const fakeCartProducts = [makeFakeCartProduct()];
     const expectedText = fakeProduct.name;
-    const preparedComponent = withHistory(<CatalogCardItem product={fakeProduct} onAddButtonClick={() => (null)} />);
+    const preparedComponent = withHistory(<CatalogCardItem product={fakeProduct} productsInCart={fakeCartProducts} onAddButtonClick={() => (null)} />);
 
     render(preparedComponent);
 
