@@ -117,16 +117,20 @@ export const checkCouponValueAction = createAsyncThunk<void, Coupon & {onSuccess
     dispatch(setCouponPending(true));
 
     dispatch(changeDiscount(0));
-    onFail();
     dispatch(setLastCorrectCoupon(null));
 
-    const response = await api.post<number>(APIRoute.Coupons, { coupon });
-    const {data} = response;
-    if (response.status === 200) {
-      onSuccess();
-      dispatch(changeDiscount(data));
-      dispatch(setLastCorrectCoupon(coupon));
+    try {
+      const response = await api.post<number>(APIRoute.Coupons, { coupon });
+      const {data} = response;
+      if (response.status === 200) {
+        onSuccess();
+        dispatch(changeDiscount(data));
+        dispatch(setLastCorrectCoupon(coupon));
+      }
+    } catch (err) {
+      onFail();
     }
+
     dispatch(setCouponPending(false));
   }
   );
