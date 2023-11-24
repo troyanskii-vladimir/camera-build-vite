@@ -22,7 +22,9 @@ export const createAPI = (): AxiosInstance => {
         const detailMessage = (error.response.data);
 
         //Сервер на все ошибки выдает пустое тело ответа, поэтому вывожу стандартные текст
-        toast.warn(`${detailMessage?.type}, Ошибка получения данных`);
+        if (detailMessage.messages[0] !== 'Invalid Value') {
+          toast.warn(`${detailMessage?.type}, Ошибка получения данных`);
+        }     
       }
 
       throw error;
