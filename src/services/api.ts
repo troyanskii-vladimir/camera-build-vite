@@ -6,6 +6,7 @@ import { BACKEND_URL, REQUEST_TIMEOUT } from '../config';
 type DetailMessageType = {
   type: string;
   message: string;
+  messages: string[];
 }
 
 
@@ -24,7 +25,7 @@ export const createAPI = (): AxiosInstance => {
         //Сервер на все ошибки выдает пустое тело ответа, поэтому вывожу стандартные текст
         if (detailMessage.messages[0] !== 'Invalid Value') {
           toast.warn(`${detailMessage?.type}, Ошибка получения данных`);
-        }     
+        }
       }
 
       throw error;
